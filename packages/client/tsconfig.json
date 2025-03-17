@@ -1,0 +1,22 @@
+{
+    "compileOnSave": true,
+    "compilerOptions": {
+        "target": "ESNext",
+        "module": "CommonJS",
+        "sourceMap": true,
+        "outDir": "./dist/server",
+        "strict": false,
+        "experimentalDecorators": true,
+        "esModuleInterop": true,
+        "resolveJsonModule": true,
+        "allowJs": true,
+        "moduleResolution": "node",
+        "types": ["node"],
+        "baseUrl": ".",
+        "paths": {
+            "@shared/*": ["../shared/*"]
+        }
+    },
+    "include": ["src/*", "src/**/*.d.ts", "src/**/*.ts", "../shared/**/*.js"],
+    "exclude": ["node_modules", "**/*.spec.js"]
+}

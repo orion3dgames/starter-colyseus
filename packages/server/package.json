@@ -1,0 +1,46 @@
+{
+    "name": "starter-server",
+    "version": "0.0.1",
+    "private": true,
+    "description": "basic server",
+    "main": "./src/index.ts",
+    "scripts": {
+        "dev": "ts-node-dev --respawn --transpile-only ./src/index.ts",
+        "start": "ts-node --transpile-only src/index.ts",
+        "build": "tsc && cp -r public dist"
+    },
+    "author": "Orion3d",
+    "license": "MIT",
+    "devDependencies": {
+        "colyseus.js": "^0.16.10", 
+        "@colyseus/core": "^0.16.12",
+        "@colyseus/loadtest": "^0.16.1",
+        "@colyseus/monitor": "^0.16.6",
+        "@colyseus/tools": "^0.16.3",
+        "@colyseus/playground": "^0.16.3",
+        "@colyseus/schema": "^3.0.21",
+        "@colyseus/ws-transport": "^0.16.3",
+        "@types/node": "^20.3.1",
+        "ts-node": "^10.9.2",
+        "ts-node-dev": "^2.0.0",
+        "typescript": "^5.8.2"
+    },
+    "dependencies": {
+        "cors": "^2.8.5",
+        "express": "^4.18.2",
+        "fs-extra": "^11.1.0",
+        "nanoid": "^5.1.2",
+        "unique-names-generator": "^4.7.1",
+        "winston": "^3.11.0"
+    },
+    "browserslist": {
+        "production": [
+            "> 5%"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    }
+}

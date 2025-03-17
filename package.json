@@ -1,0 +1,31 @@
+{
+    "name": "starter",
+    "version": "0.0.1",
+    "private": true,
+    "repository": {
+        "url": "git+https://github.com/orion3dgames/starter-colyseus.git"
+    },
+    "description": "basic starter",
+    "main": "./dist/client/index.html",
+    "scripts": {
+        "server-dev": "npm run dev -w packages/server",
+        "server-start": "npm run start -w packages/server",
+        "client-dev": "npm run dev -w packages/client",
+        "client-build": "npm run build -w packages/client"
+    },
+    "workspaces": [
+        "packages/*"
+    ],
+    "author": "Orion3d",
+    "license": "MIT",
+    "browserslist": {
+        "production": [
+            "> 5%"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    }
+}
