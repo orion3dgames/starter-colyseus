@@ -1,17 +1,20 @@
-import { Schema, type } from "@colyseus/schema";
+import { Schema, type, view } from "@colyseus/schema";
 import { ServerMsg } from "../../../../shared/types";
 import { GameRoom } from "../GameRoom";
 
 // State sync: Player structure
 export class Player extends Schema {
-    @type("number") x: number = 0;
-    @type("number") y: number = 0;
-    @type("number") z: number = 0;
-    @type("number") speed: number = 0.5;
-    @type("number") turnSpeed: number = 0.1;
-    @type("number") rot: number = 0;
-    @type("number") sequence: number = 0;
+    // visible to all
+    @type("float32") x: number = 0;
+    @type("float32") y: number = 0;
+    @type("float32") z: number = 0;
+    @type("float32") rot: number = 0;
     @type("string") name: string = "NAME";
+
+    // only needs to be visible to current player
+    @view() @type("float32") speed: number = 0.5;
+    @view() @type("float32") turnSpeed: number = 0.1;
+    @view() @type("int16") sequence: number = 0;
 
     constructor(auth, gameRoom: GameRoom) {
         super();
@@ -42,9 +45,10 @@ export class Player extends Schema {
             this.rot += turnSpeed;
         }
 
+        // update sequence number
         this.sequence = sequence;
 
-        console.log(ServerMsg[ServerMsg.PLAYER_MOVE], horizontal, vertical, this.x, this.z, this.rot);
+        console.log(speed, turnSpeed, this.x, this.z, this.rot);
     }
 
     update(dt) {}

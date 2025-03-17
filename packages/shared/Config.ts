@@ -14,8 +14,8 @@ class Config {
     movementSendRate = 100; // Set frequency the client input are sent to server when changed, in milliseconds
 
     // players
-    defaultSpeed = 2;
-    defaultTurnSpeed = 0.5;
+    defaultSpeed = 0.5;
+    defaultTurnSpeed = 0.1;
 
     // theme
     fontFamily = "luckiest_guy";

@@ -1,3 +1,4 @@
+import { StateView } from "@colyseus/schema";
 import { Room, Client } from "@colyseus/core";
 import Logger from "../../../shared/Utils/Logger";
 import { Config } from "../../../shared/Config";
@@ -56,7 +57,13 @@ export class GameRoom extends Room<GameState> {
     // When client successfully join the room
     onJoin(client: Client, options: any, auth: any) {
         Logger.info("[gameserver] player connected ", this.roomId);
-        this.state.players.set(client.sessionId, new Player(auth, this));
+
+        const player = new Player(auth, this);
+
+        client.view = new StateView();
+        client.view.add(player);
+
+        this.state.players.set(client.sessionId, player);
     }
 
     // called every time a client leaves

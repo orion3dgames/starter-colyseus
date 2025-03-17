@@ -38,6 +38,7 @@ export class Entity extends TransformNode {
     public speed: number = 1;
     public turnSpeed = 0.1; // Rotation speed
     public rot: number = 0;
+    public sequence: number = 0;
 
     constructor(name: string, scene: Scene, gameScene: GameScene, entity, isCurrentPlayer = false) {
         super(name, scene);
@@ -85,7 +86,7 @@ export class Entity extends TransformNode {
 
             // do server reconciliation on client if current player only & not blocked
             if (this.isCurrentPlayer) {
-                this.moveController.reconcileMove(this._entity.sequence); // set default entity position
+                //this.moveController.reconcileMove(this._entity.sequence); // set default entity position
             }
         });
 
