@@ -11,12 +11,13 @@ import { GameScene } from "../Scenes/GameScene";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { MoveController } from "./Entity/MoveController";
+import { GameController } from "src/Controllers/GameController";
 
 export class Entity extends TransformNode {
     public _camera: PlayerCamera;
     public _engine: Engine;
     public _input: PlayerInput;
-    public _game;
+    public _game: GameController;
     public _entity;
     public _room;
     public _shadow;
@@ -28,9 +29,6 @@ export class Entity extends TransformNode {
     public moveController: MoveController;
     public _entities;
 
-    // basic variables
-    public turnSpeed = 0.1; // Rotation speed
-
     // colyseus properties
     public sessionId: string = "";
     public name: string = "";
@@ -38,6 +36,7 @@ export class Entity extends TransformNode {
     public y: number = 0;
     public z: number = 0;
     public speed: number = 1;
+    public turnSpeed = 0.1; // Rotation speed
     public rot: number = 0;
 
     constructor(name: string, scene: Scene, gameScene: GameScene, entity, isCurrentPlayer = false) {

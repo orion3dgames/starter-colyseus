@@ -56,8 +56,8 @@ export class MoveController {
     // Smoothly interpolate the player's position and rotation towards the target
     public update(tween: number = 0.2) {
         // Smoothly move the player's position and rotation to the target position and rotation
-        this._player.position = Vector3.Lerp(this._player.position, this.targetPosition, tween);
-        this._player.rotation = Vector3.Lerp(this._player.rotation, this.targetRotation, tween);
+        Vector3.LerpToRef(this._player.position, this.targetPosition, tween, this._player.position);
+        Vector3.LerpToRef(this._player.rotation, this.targetRotation, tween, this._player.rotation);
     }
 
     // Processes the player's movement input, sends it to the server, and performs prediction

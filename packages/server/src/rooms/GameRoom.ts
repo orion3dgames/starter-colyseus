@@ -1,5 +1,6 @@
 import { Room, Client } from "@colyseus/core";
 import Logger from "../../../shared/Utils/Logger";
+import { Config } from "../../../shared/Config";
 import { ServerMsg } from "../../../shared/types";
 import { GameState } from "./schemas/GameState";
 import { Player } from "./schemas/Player";
@@ -8,6 +9,7 @@ export class GameRoom extends Room<GameState> {
     // initialize empty room state
     state = new GameState("game");
     maxClients = 4;
+    config: Config;
 
     // Colyseus will invoke when creating the room instance
     onCreate(options: any) {
@@ -15,6 +17,9 @@ export class GameRoom extends Room<GameState> {
 
         //
         this.roomId = options.roomId;
+
+        //
+        this.config = new Config();
 
         //
         this.processMessages();
@@ -51,7 +56,7 @@ export class GameRoom extends Room<GameState> {
     // When client successfully join the room
     onJoin(client: Client, options: any, auth: any) {
         Logger.info("[gameserver] player connected ", this.roomId);
-        this.state.players.set(client.sessionId, new Player(auth));
+        this.state.players.set(client.sessionId, new Player(auth, this));
     }
 
     // called every time a client leaves

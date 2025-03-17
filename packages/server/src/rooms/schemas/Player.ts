@@ -1,22 +1,23 @@
 import { Schema, type } from "@colyseus/schema";
 import { ServerMsg } from "../../../../shared/types";
+import { GameRoom } from "../GameRoom";
 
 // State sync: Player structure
 export class Player extends Schema {
     @type("number") x: number = 0;
     @type("number") y: number = 0;
     @type("number") z: number = 0;
-    @type("number") speed: number = 0.1;
+    @type("number") speed: number = 0.5;
+    @type("number") turnSpeed: number = 0.1;
     @type("number") rot: number = 0;
     @type("number") sequence: number = 0;
     @type("string") name: string = "NAME";
 
-    // basic variables
-    public turnSpeed = 0.1; // Rotation speed
-
-    constructor(auth) {
+    constructor(auth, gameRoom: GameRoom) {
         super();
 
+        this.speed = gameRoom.config.defaultSpeed;
+        this.turnSpeed = gameRoom.config.defaultTurnSpeed;
         this.name = auth.user.displayName;
     }
 

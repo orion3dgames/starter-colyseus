@@ -11,15 +11,22 @@ export class PlayerInput {
     private needsUpdate: boolean = false;
     public moveKeys = { forward: false, backward: false, left: false, right: false };
 
+    // Throttling properties
+    private lastUpdateTime: number = 0;
+    private readonly movementSendRate: number = 100; // Update every 100ms (10 times per second)
+
     constructor(entity: Entity) {
         this._moveController = entity.moveController;
         this._scene = entity._scene;
         this._room = entity._room;
 
+        // Load movement send rate from game configuration
+        this.movementSendRate = entity._game.config.movementSendRate;
+
         this._setupInputListeners();
     }
 
-    // Babylon.js Keyboard Input Handling
+    // Set up keyboard input listeners
     _setupInputListeners() {
         this._scene.onKeyboardObservable.add((kbInfo) => {
             switch (kbInfo.type) {
@@ -33,61 +40,91 @@ export class PlayerInput {
         });
     }
 
-    // Handle key press
+    // Handle key press events
     _handleKeyDown(key) {
         let updated = false;
         switch (key) {
             case "ArrowUp":
-                if (!this.moveKeys.forward) updated = this.moveKeys.forward = true;
+                if (!this.moveKeys.forward) {
+                    updated = this.moveKeys.forward = true;
+                }
                 break;
             case "ArrowDown":
-                if (!this.moveKeys.backward) updated = this.moveKeys.backward = true;
+                if (!this.moveKeys.backward) {
+                    updated = this.moveKeys.backward = true;
+                }
                 break;
             case "ArrowLeft":
-                if (!this.moveKeys.left) updated = this.moveKeys.left = true;
+                if (!this.moveKeys.left) {
+                    updated = this.moveKeys.left = true;
+                }
                 break;
             case "ArrowRight":
-                if (!this.moveKeys.right) updated = this.moveKeys.right = true;
+                if (!this.moveKeys.right) {
+                    updated = this.moveKeys.right = true;
+                }
                 break;
         }
-        if (updated) this.needsUpdate = true;
+        if (updated) {
+            this.needsUpdate = true;
+        }
     }
 
-    // Handle key release
+    // Handle key release events
     _handleKeyUp(key) {
         let updated = false;
         switch (key) {
             case "ArrowUp":
-                if (this.moveKeys.forward) updated = !(this.moveKeys.forward = false);
+                if (this.moveKeys.forward) {
+                    updated = !(this.moveKeys.forward = false);
+                }
                 break;
             case "ArrowDown":
-                if (this.moveKeys.backward) updated = !(this.moveKeys.backward = false);
+                if (this.moveKeys.backward) {
+                    updated = !(this.moveKeys.backward = false);
+                }
                 break;
             case "ArrowLeft":
-                if (this.moveKeys.left) updated = !(this.moveKeys.left = false);
+                if (this.moveKeys.left) {
+                    updated = !(this.moveKeys.left = false);
+                }
                 break;
             case "ArrowRight":
-                if (this.moveKeys.right) updated = !(this.moveKeys.right = false);
+                if (this.moveKeys.right) {
+                    updated = !(this.moveKeys.right = false);
+                }
                 break;
         }
 
-        // Only stop updating if ALL keys are released
+        // Only stop updating if all keys are released
         if (updated && !this.moveKeys.forward && !this.moveKeys.backward && !this.moveKeys.left && !this.moveKeys.right) {
             this.needsUpdate = false;
         }
     }
 
-    // Update only when needed
+    // Update player movement based on key presses
     update() {
-        if (!this.needsUpdate) return; // Skip update if nothing changed
+        const currentTime = Date.now();
+        if (!this.needsUpdate || currentTime - this.lastUpdateTime < this.movementSendRate) {
+            return;
+        }
+        this.lastUpdateTime = currentTime;
 
         let horizontal = 0; // Forward/backward movement
         let vertical = 0; // Left/right rotation
 
-        if (this.moveKeys.forward) horizontal = 1;
-        if (this.moveKeys.backward) horizontal = -1;
-        if (this.moveKeys.left) vertical = 1;
-        if (this.moveKeys.right) vertical = -1;
+        if (this.moveKeys.forward) {
+            horizontal = 1;
+        }
+        if (this.moveKeys.backward) {
+            horizontal = -1;
+        }
+        if (this.moveKeys.left) {
+            vertical = 1;
+        }
+        if (this.moveKeys.right) {
+            vertical = -1;
+        }
 
         this._moveController.processMove(horizontal, vertical);
     }

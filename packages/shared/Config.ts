@@ -1,17 +1,21 @@
 class Config {
     // general settings
-    title = "BomberMan Mayhem";
+    title = "Starter Colyseus";
     version = "Version 0.0.1";
     lang = "en";
 
     // server settings
     port = 2567;
     maxClients = 20; // set maximum clients per room
-    updateRate = 100; // Set frequency the patched state should be sent to all clients, in milliseconds
+    serverUpdateRate = 100; // Set frequency the patched state should be sent to all clients, in milliseconds
     databaseUpdateRate = 10000; // the frequency at which server save players position
 
+    // client settings
+    movementSendRate = 100; // Set frequency the client input are sent to server when changed, in milliseconds
+
     // players
-    speed = 1;
+    defaultSpeed = 2;
+    defaultTurnSpeed = 0.5;
 
     // theme
     fontFamily = "luckiest_guy";
