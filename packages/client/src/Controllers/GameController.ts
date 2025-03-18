@@ -3,8 +3,6 @@ import { Config } from "../../../shared/Config";
 import { SceneName, User } from "../../../shared/types";
 import { generateUserName } from "../Utils/Utils";
 
-import maps from "../../../shared/Data/maps.json";
-
 export class GameController {
     // core
     public engine;
@@ -42,10 +40,6 @@ export class GameController {
 
         // create colyseus client
         this.client = new Network(app.config.port);
-
-        // data
-        this.maps = maps;
-        this.selectedMap = maps.map_01; // default map
     }
 
     /////////////////////////////////////////

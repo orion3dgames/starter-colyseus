@@ -1,9 +1,9 @@
 import { Scene } from "@babylonjs/core/scene";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
-import { Color3, Color4 } from "@babylonjs/core/Maths/math.color";
+import { Color4 } from "@babylonjs/core/Maths/math.color";
 
 import { GameController } from "../Controllers/GameController";
-import { CellType, SceneName, ServerMsg } from "../../../shared/types";
+import { SceneName, ServerMsg } from "../../../shared/types";
 import { Engine } from "@babylonjs/core/Engines/engine";
 import { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
 import { PlayerCamera } from "../Controllers/PlayerCamera";
@@ -14,7 +14,6 @@ import { ShadowGenerator } from "@babylonjs/core/Lights/Shadows/shadowGenerator"
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import { SkyMaterial } from "@babylonjs/materials/sky/skyMaterial";
 import { getStateCallbacks } from "colyseus.js";
-import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
 import { GridMaterial } from "@babylonjs/materials/grid/gridMaterial";
 
 export class GameScene {
