@@ -29,18 +29,18 @@ export class GameRoom extends Room<GameState> {
     processMessages() {
         // Client message listeners:
         this.onMessage("*", (client, type, data) => {
-            ////////////////////////////////////
-            ////////// PLAYER EVENTS ///////////
-            ////////////////////////////////////
+            // get player state
             const playerState: Player = this.state.players.get(client.sessionId) as Player;
             if (!playerState) {
                 return false;
             }
 
+            // ping pong
             if (type === ServerMsg.PING) {
                 client.send(ServerMsg.PONG, data);
             }
 
+            // player move
             if (type === ServerMsg.PLAYER_MOVE) {
                 console.log(ServerMsg[ServerMsg.PLAYER_MOVE], data);
                 playerState.move(data.h, data.v, data.seq);
@@ -61,9 +61,10 @@ export class GameRoom extends Room<GameState> {
         const player = new Player(auth, this);
 
         client.view = new StateView();
-        client.view.add(player);
 
         this.state.players.set(client.sessionId, player);
+
+        client.view.add(player);
     }
 
     // called every time a client leaves

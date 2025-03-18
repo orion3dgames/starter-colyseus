@@ -52,7 +52,7 @@ export class MoveController {
         if (vertical > 0) this.targetRotation.y -= turnSpeed; // Turn left
         if (vertical < 0) this.targetRotation.y += turnSpeed; // Turn right
 
-        //console.log(this._player, speed, turnSpeed, this.targetPosition.x, this.targetPosition.z, this.targetRotation.y);
+        console.log(this._player);
     }
 
     // Smoothly interpolate the player's position and rotation towards the target
