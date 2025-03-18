@@ -17,7 +17,7 @@
         "@colyseus/monitor": "^0.16.6",
         "@colyseus/tools": "^0.16.3",
         "@colyseus/playground": "^0.16.3",
-        "@colyseus/schema": "^3.0.22",
+        "@colyseus/schema": "^3.0.24",
         "@colyseus/ws-transport": "^0.16.3",
         "@types/node": "^22.13.10",
         "ts-node": "^10.9.2",

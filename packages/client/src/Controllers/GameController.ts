@@ -4,6 +4,8 @@ import { SceneName, User } from "../../../shared/types";
 import { generateUserName } from "../Utils/Utils";
 import { Engine } from "@babylonjs/core/Engines/engine";
 import { Scene } from "@babylonjs/core/scene";
+import { AssetsController } from "./AssetsController";
+import { AssetContainer } from "@babylonjs/core/assetContainer";
 
 export class GameController {
     // core
@@ -20,6 +22,12 @@ export class GameController {
 
     // user
     public user: User;
+
+    // assets
+    public _assetsCtrl: AssetsController;
+    public _loadedAssets: AssetContainer[] = [];
+    public instances = new Map();
+    public materials = new Map();
 
     // network
     public joinedRoom;
@@ -38,6 +46,21 @@ export class GameController {
 
         // create colyseus client
         this.network = new NetworkController(app.config.port);
+    }
+
+    /////////////////////////////////////////
+    //////////// ASSETS DATA /////////////////
+    /////////////////////////////////////////
+
+    async fetchAsset(key) {
+        if (this._loadedAssets[key]) {
+            return this._loadedAssets[key];
+        }
+    }
+
+    async initializeAssetController(shadow = null) {
+        this._loadedAssets = [];
+        this._assetsCtrl = new AssetsController(this, shadow);
     }
 
     /////////////////////////////////////////

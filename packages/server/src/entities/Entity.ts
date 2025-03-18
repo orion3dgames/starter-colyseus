@@ -2,7 +2,7 @@ import { StateView } from "@colyseus/schema";
 import { GameRoom } from "../rooms/GameRoom";
 import { PlayerSchema } from "../schemas/PlayerSchema";
 
-export class Player {
+export class Entity {
     gameRoom: GameRoom;
     // colyseus chema
     schema: PlayerSchema;
@@ -20,7 +20,6 @@ export class Player {
     sequence: number = 0;
 
     constructor(auth, client, gameRoom: GameRoom) {
-        console.log(auth);
         if (!auth.user) {
             auth = {
                 user: {
@@ -36,30 +35,30 @@ export class Player {
         this.turnSpeed = gameRoom.config.defaultTurnSpeed;
         this.name = auth!.user!.displayName;
 
-        // add to state
+        // add to colyseus state
         client.view = new StateView();
         gameRoom.state.players.set(this.sessionId, this.schema);
         client.view.add(this.schema);
     }
 
+    /*
+     * synchronize server entity values to schema so it updates to the client(s) states
+     */
     syncToSchema() {
-        let propertyToSync = {
-            x: this.x,
-            y: this.y,
-            z: this.z,
-            rot: this.rot,
-            name: this.name,
-            speed: this.speed,
-            turnSpeed: this.turnSpeed,
-            sequence: this.sequence,
-        };
+        // private properties
+        this.schema.sequence = this.sequence;
+        this.schema.speed = this.speed;
+        this.schema.turnSpeed = this.turnSpeed;
 
-        for (let property in propertyToSync) {
-            let value = propertyToSync[property];
-            //console.log("[syncToSchema]", property, value);
-            this.schema[property] = value;
-        }
-        console.log("[syncToSchema]", "PLAYER SEQ: " + this.sequence, "SCHEMA SEQ: " + this.schema.sequence);
+        // public properties
+        this.schema.name = this.name;
+        this.schema.rot = this.rot;
+        // when the below properties are commented, all the above property get synced correctly
+        // --- > when i uncomment the below properties, every get synced except for the private properties...
+        //this.schema.x = this.x;
+        //this.schema.y = this.y;
+        //this.schema.z = this.z;
+        console.log("SYNCING SEQ TO SCHEMA", this.schema.sequence);
     }
 
     move(horizontal: number, vertical: number, sequence: number) {

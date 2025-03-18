@@ -4,14 +4,14 @@ import Logger from "../../../shared/Utils/Logger";
 import { Config } from "../../../shared/Config";
 import { ServerMsg } from "../../../shared/types";
 import { GameState } from "../schemas/GameState";
-import { Player } from "../entities/player";
+import { Entity } from "../entities/Entity";
 
 export class GameRoom extends Room<GameState> {
     // initialize empty room state
     state = new GameState("game");
     maxClients = 4;
     config: Config;
-    players: Map<string, Player> = new Map();
+    players: Map<string, Entity> = new Map();
 
     // Colyseus will invoke when creating the room instance
     onCreate(options: any) {
@@ -28,9 +28,7 @@ export class GameRoom extends Room<GameState> {
 
         //Set a simulation interval that can change the state of the game
         this.setSimulationInterval((dt) => {
-            this.players.forEach((player) => {
-                player.update(dt);
-            });
+            this.update(dt);
         }, 1000);
     }
 
@@ -77,7 +75,7 @@ export class GameRoom extends Room<GameState> {
     onJoin(client: Client, options: any, auth: any) {
         Logger.info("[gameserver] player connected ", this.roomId);
 
-        const player = new Player(auth, client, this);
+        const player = new Entity(auth, client, this);
 
         this.players.set(client.sessionId, player);
     }

@@ -3,6 +3,7 @@ import { Scene } from "@babylonjs/core/scene";
 import { Entity } from "../Entity";
 import { Room } from "colyseus.js";
 import { MoveController } from "./MoveController";
+import { PointerEventTypes } from "@babylonjs/core/Events/pointerEvents";
 
 export class InputController {
     private _scene: Scene;
@@ -10,23 +11,21 @@ export class InputController {
     private _movement: MoveController;
     private needsUpdate: boolean = false;
     public moveKeys = { forward: false, backward: false, left: false, right: false };
+    public rightMouseDown: boolean = false;
 
     // Throttling properties
     private lastUpdateTime: number = 0;
-    private readonly movementSendRate: number = 100; // Update every 100ms (10 times per second)
+    private readonly movementSendRate: number;
 
     constructor(entity: Entity) {
         this._movement = entity._movement;
         this._scene = entity._scene;
         this._room = entity._room;
-
-        // Load movement send rate from game configuration
         this.movementSendRate = entity._game.config.movementSendRate;
 
         this._setupInputListeners();
     }
 
-    // Set up keyboard input listeners
     _setupInputListeners() {
         this._scene.onKeyboardObservable.add((kbInfo) => {
             switch (kbInfo.type) {
@@ -38,28 +37,48 @@ export class InputController {
                     break;
             }
         });
+
+        // Mouse event listeners
+        this._scene.onPointerObservable.add((pointerInfo) => {
+            switch (pointerInfo.type) {
+                case PointerEventTypes.POINTERDOWN:
+                    if (pointerInfo.event.button === 2) {
+                        // Right-click
+                        this.rightMouseDown = true;
+                    }
+                    break;
+                case PointerEventTypes.POINTERUP:
+                    if (pointerInfo.event.button === 2) {
+                        this.rightMouseDown = false;
+                    }
+                    break;
+            }
+        });
     }
 
-    // Handle key press events
-    _handleKeyDown(key) {
+    _handleKeyDown(key: string) {
         let updated = false;
         switch (key) {
             case "ArrowUp":
+            case "w":
                 if (!this.moveKeys.forward) {
                     updated = this.moveKeys.forward = true;
                 }
                 break;
             case "ArrowDown":
+            case "s":
                 if (!this.moveKeys.backward) {
                     updated = this.moveKeys.backward = true;
                 }
                 break;
             case "ArrowLeft":
+            case "a":
                 if (!this.moveKeys.left) {
                     updated = this.moveKeys.left = true;
                 }
                 break;
             case "ArrowRight":
+            case "d":
                 if (!this.moveKeys.right) {
                     updated = this.moveKeys.right = true;
                 }
@@ -70,39 +89,39 @@ export class InputController {
         }
     }
 
-    // Handle key release events
-    _handleKeyUp(key) {
+    _handleKeyUp(key: string) {
         let updated = false;
         switch (key) {
             case "ArrowUp":
+            case "w":
                 if (this.moveKeys.forward) {
                     updated = !(this.moveKeys.forward = false);
                 }
                 break;
             case "ArrowDown":
+            case "s":
                 if (this.moveKeys.backward) {
                     updated = !(this.moveKeys.backward = false);
                 }
                 break;
             case "ArrowLeft":
+            case "a":
                 if (this.moveKeys.left) {
                     updated = !(this.moveKeys.left = false);
                 }
                 break;
             case "ArrowRight":
+            case "d":
                 if (this.moveKeys.right) {
                     updated = !(this.moveKeys.right = false);
                 }
                 break;
         }
-
-        // Only stop updating if all keys are released
-        if (updated && !this.moveKeys.forward && !this.moveKeys.backward && !this.moveKeys.left && !this.moveKeys.right) {
+        if (updated && !Object.values(this.moveKeys).some(Boolean)) {
             this.needsUpdate = false;
         }
     }
 
-    // Update player movement based on key presseds
     update() {
         const currentTime = Date.now();
         if (!this.needsUpdate || currentTime - this.lastUpdateTime < this.movementSendRate) {
@@ -111,19 +130,19 @@ export class InputController {
         this.lastUpdateTime = currentTime;
 
         let horizontal = 0; // Forward/backward movement
-        let vertical = 0; // Left/right rotation
+        let vertical = 0; // Left/right movement
 
-        if (this.moveKeys.forward) {
-            horizontal = 1;
-        }
-        if (this.moveKeys.backward) {
-            horizontal = -1;
-        }
-        if (this.moveKeys.left) {
-            vertical = 1;
-        }
-        if (this.moveKeys.right) {
-            vertical = -1;
+        if (this.moveKeys.forward) horizontal = 1;
+        if (this.moveKeys.backward) horizontal = -1;
+
+        if (this.rightMouseDown) {
+            // Strafe when right mouse button is held
+            if (this.moveKeys.left) vertical = -1;
+            if (this.moveKeys.right) vertical = 1;
+        } else {
+            // Rotate when right mouse button is not held
+            if (this.moveKeys.left) vertical = 1;
+            if (this.moveKeys.right) vertical = -1;
         }
 
         this._movement.processMove(horizontal, vertical);

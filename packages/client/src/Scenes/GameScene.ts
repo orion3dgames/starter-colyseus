@@ -92,6 +92,11 @@ export class GameScene {
         this.room = this._game.joinedRoom;
         this.sessionId = this.room.sessionId;
 
+        // initialize assets controller & load level
+        this._game.initializeAssetController();
+        await this._game._assetsCtrl.loadLevel();
+        this._game.engine.displayLoadingUI();
+
         // hide loading screen
         this._game.engine.hideLoadingUI();
         await this.startGame();
@@ -106,7 +111,7 @@ export class GameScene {
         this.$ = getStateCallbacks(this.room);
 
         ////////////////////// PLAYERS
-        this.$(this.room!.state).players.onAdd((entity, sessionId) => {
+        this.$(this.room.state).players.onAdd((entity, sessionId) => {
             console.log("[GAME] PLAYER ADDED", entity);
             let currentPlayer = sessionId === this.sessionId;
             this.entities.set(sessionId, new Entity(sessionId, this._scene, this, entity, currentPlayer));

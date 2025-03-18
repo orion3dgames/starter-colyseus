@@ -43,13 +43,23 @@ export class MoveController {
         let forwardX = Math.sin(this.targetRotation.y) * horizontal * speed;
         let forwardZ = Math.cos(this.targetRotation.y) * horizontal * speed;
 
-        // Update the player's target position based on calculated movement
-        this.targetPosition.x += forwardX;
-        this.targetPosition.z += forwardZ;
+        // Calculate strafe movement (perpendicular to forward direction)
+        let strafeX = 0;
+        let strafeZ = 0;
 
-        // Rotate player left/right based on input keys
-        if (vertical > 0) this.targetRotation.y -= turnSpeed; // Turn left
-        if (vertical < 0) this.targetRotation.y += turnSpeed; // Turn right
+        // Rotate player left/right only when right mouse is not held
+        if (!this._player._input.rightMouseDown) {
+            if (vertical > 0) this.targetRotation.y -= turnSpeed; // Turn left
+            if (vertical < 0) this.targetRotation.y += turnSpeed; // Turn right
+        } else {
+            // Calculate strafe movement (perpendicular to forward direction)
+            strafeX = Math.cos(this.targetRotation.y) * vertical * speed;
+            strafeZ = -Math.sin(this.targetRotation.y) * vertical * speed;
+        }
+
+        // Update the player's target position based on forward and strafe movement
+        this.targetPosition.x += forwardX + strafeX;
+        this.targetPosition.z += forwardZ + strafeZ;
     }
 
     // Smoothly interpolate the player's position and rotation towards the target

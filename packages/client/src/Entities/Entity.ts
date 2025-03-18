@@ -89,7 +89,7 @@ export class Entity extends TransformNode {
 
         // update from server
         gameScene.$(this._entity).onChange((test) => {
-            console.log(this._entity);
+            console.log("[SERVER UPDATE]", this._entity);
 
             // update player data from server data
             Object.assign(this, this._entity);

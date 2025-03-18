@@ -10,7 +10,7 @@ export class PlayerSchema extends Schema {
     @type("string") name: string = "NAME";
 
     // only needs to be visible to current player
-    @view() @type("float32") speed: number = 0.5;
+    @view() @type("number") speed: number = 0.5;
     @view() @type("float32") turnSpeed: number = 0.1;
     @view() @type("int16") sequence: number = 0;
 }
