@@ -1,7 +1,7 @@
 {
     "name": "starter",
     "version": "0.0.1",
-    "private": true,
+    "private": false,
     "repository": {
         "url": "git+https://github.com/orion3dgames/starter-colyseus.git"
     },
