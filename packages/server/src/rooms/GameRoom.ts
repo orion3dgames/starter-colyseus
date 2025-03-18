@@ -3,8 +3,8 @@ import { Room, Client } from "@colyseus/core";
 import Logger from "../../../shared/Utils/Logger";
 import { Config } from "../../../shared/Config";
 import { ServerMsg } from "../../../shared/types";
-import { GameState } from "./schemas/GameState";
-import { Player } from "./schemas/Player";
+import { GameState } from "../schemas/GameState";
+import { Player } from "../schemas/Player";
 
 export class GameRoom extends Room<GameState> {
     // initialize empty room state

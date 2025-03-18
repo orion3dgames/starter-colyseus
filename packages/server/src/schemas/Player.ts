@@ -1,6 +1,5 @@
 import { Schema, type, view } from "@colyseus/schema";
-import { ServerMsg } from "../../../../shared/types";
-import { GameRoom } from "../GameRoom";
+import { GameRoom } from "../rooms/GameRoom";
 
 // State sync: Player structure
 export class Player extends Schema {
