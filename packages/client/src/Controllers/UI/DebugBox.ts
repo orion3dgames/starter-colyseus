@@ -4,7 +4,7 @@ import { AdvancedDynamicTexture, TextBlock, Rectangle, Control } from "@babylonj
 import { countPlayers, roundTo } from "../../Utils/Utils";
 import { Entity } from "../../Entities/Entity";
 import { ServerMsg } from "../../../../shared/types";
-import { PlayerUI } from "../PlayerUI";
+import { InterfaceController } from "../InterfaceController";
 
 export class DebugBox {
     private _engine: Engine;
@@ -16,7 +16,7 @@ export class DebugBox {
     private _ui;
     private _debugTextUI;
 
-    constructor(playerUI: PlayerUI, entity) {
+    constructor(playerUI: InterfaceController, entity) {
         this._ui = playerUI._ui;
         this._engine = playerUI._game.engine;
         this._scene = playerUI._scene;

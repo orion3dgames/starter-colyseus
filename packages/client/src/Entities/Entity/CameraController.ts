@@ -5,13 +5,10 @@ import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { FollowCamera } from "@babylonjs/core/Cameras/followCamera";
 import { ArcRotateCamera } from "@babylonjs/core/Cameras/arcRotateCamera";
 
-export class PlayerCamera {
+export class CameraController {
     private _scene: Scene;
-    private _cameraRoot;
+    private _cameraRoot: TransformNode;
     public camera: ArcRotateCamera | FollowCamera | UniversalCamera;
-
-    public shakeTimer;
-    public shouldShake: boolean = false;
 
     constructor(scene) {
         this._scene = scene;
@@ -52,9 +49,6 @@ export class PlayerCamera {
     }
 
     tween(player) {
-        //this.camera.position = player.position;
-        //this._cameraRoot.position = Vector3.Lerp(this._cameraRoot.position, new Vector3(player.position.x, player.position.y, player.position.z), 0.2);
         this._cameraRoot.position = new Vector3(player.position.x, player.position.y, player.position.z);
-        //this._cameraRoot.lockedTarget = player.position;
     }
 }

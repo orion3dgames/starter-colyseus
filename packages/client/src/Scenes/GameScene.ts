@@ -6,25 +6,25 @@ import { GameController } from "../Controllers/GameController";
 import { SceneName, ServerMsg } from "../../../shared/types";
 import { Engine } from "@babylonjs/core/Engines/engine";
 import { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
-import { PlayerCamera } from "../Controllers/PlayerCamera";
 import { Entity } from "../Entities/Entity";
-import { PlayerUI } from "../Controllers/PlayerUI";
+import { InterfaceController } from "../Controllers/InterfaceController";
 import { DirectionalLight } from "@babylonjs/core/Lights/directionalLight";
 import { ShadowGenerator } from "@babylonjs/core/Lights/Shadows/shadowGenerator";
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import { SkyMaterial } from "@babylonjs/materials/sky/skyMaterial";
 import { getStateCallbacks } from "colyseus.js";
 import { GridMaterial } from "@babylonjs/materials/grid/gridMaterial";
+import { CameraController } from "../Entities/Entity/CameraController";
 
 export class GameScene {
     public _game: GameController;
     public _scene: Scene;
     public _engine: Engine;
     public _newState: SceneName;
-    public _ui;
+    public _interface;
     public _environment;
     public _shadow: ShadowGenerator;
-    public _camera: PlayerCamera;
+    public _camera: CameraController;
     public room;
     public sessionId;
     public entities = new Map();
@@ -99,7 +99,7 @@ export class GameScene {
 
     async startGame() {
         // set inputs
-        this._ui = new PlayerUI(this._scene, this._engine, this);
+        this._interface = new InterfaceController(this._scene, this._engine, this);
 
         ///////////////////////////////////////////////////////////////////////////
         /////////////////////////// COLYSEUS STATE

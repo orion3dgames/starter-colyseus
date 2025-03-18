@@ -3,31 +3,41 @@ import { Color3 } from "@babylonjs/core/Maths/math.color";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import { Scene } from "@babylonjs/core/scene";
-import { PlayerInput } from "./Entity/PlayerInput";
-import { PlayerCamera } from "../Controllers/PlayerCamera";
-import { PlayerUI } from "../Controllers/PlayerUI";
+
 import { Engine } from "@babylonjs/core/Engines/engine";
 import { GameScene } from "../Scenes/GameScene";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import { Mesh } from "@babylonjs/core/Meshes/mesh";
+
 import { MoveController } from "./Entity/MoveController";
 import { GameController } from "src/Controllers/GameController";
+import { NameplateController } from "./Entity/NameplateController";
+import { InputController } from "./Entity/InputController";
+import { CameraController } from "../Entities/Entity/CameraController";
+import { InterfaceController } from "../Controllers/InterfaceController";
 
 export class Entity extends TransformNode {
-    public _camera: PlayerCamera;
+    public _camera: CameraController;
     public _engine: Engine;
-    public _input: PlayerInput;
     public _game: GameController;
-    public _entity;
     public _room;
     public _shadow;
-    public _ui: PlayerUI;
-    public playerMesh: Mesh;
-    public isCurrentPlayer;
-    public tile;
-    public characterLabel;
-    public moveController: MoveController;
+    public _interface: InterfaceController;
+    public _input: InputController;
+    public _nameplate: NameplateController;
+    public _movement: MoveController;
+
+    // entities
     public _entities;
+    public _entity;
+
+    // mesh
+    public playerMesh: Mesh;
+    public nameplateMesh: Mesh;
+
+    // other properties
+    public scale: number = 1;
+    public isCurrentPlayer: boolean = false;
 
     // colyseus properties
     public sessionId: string = "";
@@ -48,7 +58,7 @@ export class Entity extends TransformNode {
         this._engine = gameScene._engine;
         this._room = gameScene.room;
         this._game = gameScene._game;
-        this._ui = gameScene._ui;
+        this._interface = gameScene._interface;
         this._shadow = gameScene._shadow;
         this._entities = gameScene.entities;
         this._entity = entity;
@@ -66,14 +76,15 @@ export class Entity extends TransformNode {
         this.spawn();
 
         // move controller
-        this.moveController = new MoveController(this);
+        this._movement = new MoveController(this);
+        this._nameplate = new NameplateController(this);
 
         // if current player
         if (isCurrentPlayer) {
-            this._input = new PlayerInput(this);
-            this._camera = new PlayerCamera(scene);
+            this._input = new InputController(this);
+            this._camera = new CameraController(scene);
             this._camera.createUniversalCamera(this._scene);
-            this._ui.setCurrentPlayer(this);
+            this._interface.setCurrentPlayer(this);
         }
 
         // update from server
@@ -82,7 +93,7 @@ export class Entity extends TransformNode {
             Object.assign(this, this._entity);
 
             // set default position
-            this.moveController.setPositionAndRotation(entity); // set next default position from server entity
+            this._movement.setPositionAndRotation(entity); // set next default position from server entity
 
             // do server reconciliation on client if current player only & not blocked
             if (this.isCurrentPlayer) {
@@ -90,8 +101,8 @@ export class Entity extends TransformNode {
             }
         });
 
-        // show entoty label
-        this.characterLabel = this._ui.createEntityLabel(this);
+        // show entity label
+        this.nameplateMesh = this._nameplate.addNamePlate();
     }
 
     public spawn() {
@@ -112,24 +123,25 @@ export class Entity extends TransformNode {
     }
 
     public update(delta: number) {
-        this.moveController.update();
+        // update entity movement
+        this._movement.update();
+    }
 
-        // only for current player
+    public updateServerRate() {
+        // update only for current player
         if (this.isCurrentPlayer) {
-            this._ui.update();
+            this._interface.update();
             this._camera.tween(this);
             this._input.update();
         }
     }
 
-    public updateServerRate() {}
-
     public delete() {
         if (this.playerMesh) {
             this.playerMesh.dispose();
         }
-        if (this.characterLabel) {
-            this.characterLabel.dispose();
+        if (this.nameplateMesh) {
+            this.nameplateMesh.dispose();
         }
     }
 }

@@ -4,10 +4,10 @@ import { Entity } from "../Entity";
 import { Room } from "colyseus.js";
 import { MoveController } from "./MoveController";
 
-export class PlayerInput {
+export class InputController {
     private _scene: Scene;
     private _room: Room;
-    private _moveController: MoveController;
+    private _movement: MoveController;
     private needsUpdate: boolean = false;
     public moveKeys = { forward: false, backward: false, left: false, right: false };
 
@@ -16,7 +16,7 @@ export class PlayerInput {
     private readonly movementSendRate: number = 100; // Update every 100ms (10 times per second)
 
     constructor(entity: Entity) {
-        this._moveController = entity.moveController;
+        this._movement = entity._movement;
         this._scene = entity._scene;
         this._room = entity._room;
 
@@ -126,6 +126,6 @@ export class PlayerInput {
             vertical = -1;
         }
 
-        this._moveController.processMove(horizontal, vertical);
+        this._movement.processMove(horizontal, vertical);
     }
 }

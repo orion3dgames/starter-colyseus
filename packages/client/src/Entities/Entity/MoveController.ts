@@ -1,7 +1,6 @@
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { ServerMsg, PlayerInputs } from "../../../../shared/types";
 import { Entity } from "../Entity";
-import { PlayerInput } from "./PlayerInput";
 import { Scene } from "@babylonjs/core/scene";
 
 export class MoveController {
