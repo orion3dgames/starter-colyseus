@@ -1,13 +1,15 @@
-import { Network } from "./Network";
+import { NetworkController } from "./NetworkController";
 import { Config } from "../../../shared/Config";
 import { SceneName, User } from "../../../shared/types";
 import { generateUserName } from "../Utils/Utils";
+import { Engine } from "@babylonjs/core/Engines/engine";
+import { Scene } from "@babylonjs/core/scene";
 
 export class GameController {
     // core
-    public engine;
-    public scene;
-    public client: Network;
+    public engine: Engine;
+    public scene: Scene;
+    public network: NetworkController;
     public config: Config;
     public canvas;
 
@@ -15,10 +17,6 @@ export class GameController {
     public state: number = 0;
     public currentScene;
     public nextScene;
-
-    // data
-    public maps;
-    public selectedMap;
 
     // user
     public user: User;
@@ -39,7 +37,7 @@ export class GameController {
         };
 
         // create colyseus client
-        this.client = new Network(app.config.port);
+        this.network = new NetworkController(app.config.port);
     }
 
     /////////////////////////////////////////

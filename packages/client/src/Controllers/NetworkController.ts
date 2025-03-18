@@ -2,7 +2,7 @@
 import { Client, Room } from "colyseus.js";
 import { isLocal } from "../Utils/Utils";
 
-export class Network {
+export class NetworkController {
     public _client: Client;
 
     constructor(port) {

@@ -85,7 +85,7 @@ export class GameScene {
         // setup colyseus room
         if (!this._game.joinedRoom) {
             let hash = window.location.hash.substring(1);
-            this._game.joinedRoom = await this._game.client.joinOrCreate(hash, this._game.user);
+            this._game.joinedRoom = await this._game.network.joinOrCreate(hash, this._game.user);
         }
 
         // set room
