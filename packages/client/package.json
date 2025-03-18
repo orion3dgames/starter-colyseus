@@ -9,14 +9,14 @@
         "start": "webpack serve --open --config webpack.dev.js",
         "build": "webpack --config webpack.prod.js"
     },
-    "author": "Orion3d", 
+    "author": "Orion3d",
     "license": "MIT",
     "devDependencies": {
         "@types/react": "^19.0.10",
         "@types/react-dom": "^19.0.4",
         "copy-webpack-plugin": "^11.0.0",
         "ts-loader": "9.5.1",
-        "typescript": "^5.3.3", 
+        "typescript": "^5.3.3",
         "webpack": "^5.88.2",
         "webpack-bundle-analyzer": "^4.9.0",
         "webpack-cli": "^5.1.4",
@@ -31,10 +31,10 @@
         "@babylonjs/loaders": "7.51.3",
         "@babylonjs/materials": "7.51.3",
         "@babylonjs/serializers": "7.51.3",
+        "axios": "1.8.3",
         "babylonjs-gltf2interface": "7.51.3",
         "colyseus.js": "^0.16.11",
-        "unique-username-generator": "^1.4.0",
-        "axios": "1.8.3"
+        "unique-names-generator": "^4.7.1"
     },
     "browserslist": {
         "production": [
