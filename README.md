@@ -18,6 +18,7 @@ Building a basic multiplayer game using colyseus
 - Run `npm run client-dev` to launch the client
 
 > The client should be accessible at [`http://localhost:8080`](http://localhost:8080)
+
 > The server should be available locally at [http://localhost:2567](http://localhost:2567)
 
 ## Credits
