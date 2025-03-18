@@ -67,9 +67,8 @@ export class DebugBox {
         locationText += "X: " + roundTo(this._entity.position.x, 2) + " ---> " + this._entity.x + "\n";
         locationText += "y: " + roundTo(this._entity.position.y, 2) + "\n";
         locationText += "z: " + roundTo(this._entity.position.z, 2) + " ---> " + this._entity.z + "\n";
-        locationText += "RotX: " + roundTo(this._entity.playerMesh.rotation.x, 2) + "\n";
-        locationText += "RotY: " + roundTo(this._entity.playerMesh.rotation.y, 2) + "\n";
-        locationText += "RotZ: " + roundTo(this._entity.playerMesh.rotation.z, 2) + "\n";
+        locationText += "RotY: " + roundTo(this._entity.rotation.y, 2) + "\n";
+        locationText += "Seq: " + this._entity.sequence + "\n";
         this._debugTextUI.text = locationText;
     }
 }

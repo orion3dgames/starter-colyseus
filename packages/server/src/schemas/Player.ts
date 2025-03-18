@@ -13,7 +13,7 @@ export class Player extends Schema {
     // only needs to be visible to current player
     @view() @type("float32") speed: number = 0.5;
     @view() @type("float32") turnSpeed: number = 0.1;
-    @view() @type("int16") sequence: number = 0;
+    @type("int16") sequence: number = 0;
 
     constructor(auth, gameRoom: GameRoom) {
         super();

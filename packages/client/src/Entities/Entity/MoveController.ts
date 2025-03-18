@@ -50,8 +50,6 @@ export class MoveController {
         // Rotate player left/right based on input keys
         if (vertical > 0) this.targetRotation.y -= turnSpeed; // Turn left
         if (vertical < 0) this.targetRotation.y += turnSpeed; // Turn right
-
-        console.log(this._player);
     }
 
     // Smoothly interpolate the player's position and rotation towards the target

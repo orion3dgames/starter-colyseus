@@ -102,7 +102,7 @@ export class InputController {
         }
     }
 
-    // Update player movement based on key presses
+    // Update player movement based on key presseds
     update() {
         const currentTime = Date.now();
         if (!this.needsUpdate || currentTime - this.lastUpdateTime < this.movementSendRate) {

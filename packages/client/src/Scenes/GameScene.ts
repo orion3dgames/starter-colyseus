@@ -126,7 +126,6 @@ export class GameScene {
         // main game loop
         const lastUpdates = {
             SERVER: Date.now(),
-            SLOW: Date.now(),
             PING: Date.now(),
         };
 
@@ -143,19 +142,11 @@ export class GameScene {
                 if (currentTime - lastUpdates["SERVER"] >= 100) {
                     entity.updateServerRate(100);
                 }
-
-                // slow rate
-                if (currentTime - lastUpdates["SLOW"] >= 100) {
-                    entity.updateServerRate(100);
-                }
             });
 
             // reset timers for entities
             if (currentTime - lastUpdates["SERVER"] >= 100) {
                 lastUpdates["SERVER"] = currentTime;
-            }
-            if (currentTime - lastUpdates["SLOW"] >= 1000) {
-                lastUpdates["SLOW"] = currentTime;
             }
 
             // game update loop

@@ -29,6 +29,11 @@ export class GameRoom extends Room<GameState> {
     processMessages() {
         // Client message listeners:
         this.onMessage("*", (client, type, data) => {
+            // debug server messages
+            if (type != ServerMsg.PING) {
+                console.log(client.sessionId, ServerMsg[type], data);
+            }
+
             // get player state
             const playerState: Player = this.state.players.get(client.sessionId) as Player;
             if (!playerState) {
@@ -42,7 +47,6 @@ export class GameRoom extends Room<GameState> {
 
             // player move
             if (type === ServerMsg.PLAYER_MOVE) {
-                console.log(ServerMsg[ServerMsg.PLAYER_MOVE], data);
                 playerState.move(data.h, data.v, data.seq);
             }
         });

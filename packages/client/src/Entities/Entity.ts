@@ -89,6 +89,8 @@ export class Entity extends TransformNode {
 
         // update from server
         gameScene.$(this._entity).onChange((test) => {
+            //console.log(this._entity);
+
             // update player data from server data
             Object.assign(this, this._entity);
 
@@ -97,7 +99,7 @@ export class Entity extends TransformNode {
 
             // do server reconciliation on client if current player only & not blocked
             if (this.isCurrentPlayer) {
-                //this.moveController.reconcileMove(this._entity.sequence); // set default entity position
+                this._movement.reconcileMove(this._entity.sequence); // set default entity position
             }
         });
 
@@ -125,14 +127,18 @@ export class Entity extends TransformNode {
     public update(delta: number) {
         // update entity movement
         this._movement.update();
+
+        // update only for current player
+        if (this.isCurrentPlayer) {
+            this._input.update();
+            this._camera.tween(this);
+        }
     }
 
     public updateServerRate() {
         // update only for current player
         if (this.isCurrentPlayer) {
             this._interface.update();
-            this._camera.tween(this);
-            this._input.update();
         }
     }
 
