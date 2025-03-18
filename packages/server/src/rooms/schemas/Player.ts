@@ -48,7 +48,7 @@ export class Player extends Schema {
         // update sequence number
         this.sequence = sequence;
 
-        console.log(speed, turnSpeed, this.x, this.z, this.rot);
+        // console.log(speed, turnSpeed, this.x, this.z, this.rot);
     }
 
     update(dt) {}

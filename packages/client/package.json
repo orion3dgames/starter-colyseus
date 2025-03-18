@@ -32,7 +32,7 @@
         "@babylonjs/materials": "7.51.3",
         "@babylonjs/serializers": "7.51.3",
         "babylonjs-gltf2interface": "7.51.3",
-        "colyseus.js": "^0.16.10",
+        "colyseus.js": "^0.16.11",
         "unique-username-generator": "^1.4.0",
         "axios": "1.8.3"
     },
