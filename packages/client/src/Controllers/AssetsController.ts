@@ -1,5 +1,3 @@
-import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
-import { Color3 } from "@babylonjs/core/Maths/math.color";
 import {
     AssetsManager,
     BinaryFileAssetTask,
@@ -12,7 +10,6 @@ import {
     TextureAssetTask,
 } from "@babylonjs/core/Misc/assetsManager";
 import { GameController } from "./GameController";
-import { ShadowGenerator } from "@babylonjs/core/Lights/Shadows/shadowGenerator";
 
 type AssetEntry = {
     key: string;
@@ -25,27 +22,20 @@ type AssetEntry = {
 export class AssetsController {
     private _game: GameController;
     private _assetsManager: AssetsManager;
-    private _loadingTxt;
 
     private assetDatabase: AssetEntry[] = [];
     private assetToPreload: AssetEntry[] = [];
 
     public allMeshes;
 
-    constructor(game, shadow) {
+    constructor(game: GameController, shadow) {
         this._game = game;
-
-        //
-        this._loadingTxt = window.document.getElementById("loadingTextDetails");
 
         // Assets manager
         this._assetsManager = new AssetsManager(this._game.scene);
 
         // set list of assets
-        this.assetDatabase = [
-            // music
-            { key: "PLAYER_01", filename: "skeleton_01.glb", extension: "glb", type: "mesh", instantiate: true },
-        ];
+        this.assetDatabase = [{ key: "PLAYER_01", filename: "skeleton_01.glb", extension: "glb", type: "mesh", instantiate: true }];
     }
 
     public async preloadAssets() {
@@ -149,13 +139,10 @@ export class AssetsController {
 
     public async loadLevel() {
         this.assetToPreload = this.assetDatabase;
-        console.log(this.assetToPreload);
         await this.preloadAssets();
     }
 
     private showLoadingMessage(msg) {
-        if (this._loadingTxt) {
-            this._loadingTxt.innerHTML = msg;
-        }
+        this._game._loading.updateLoadingMessage(msg);
     }
 }

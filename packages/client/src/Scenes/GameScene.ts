@@ -97,35 +97,29 @@ export class GameScene {
         await this._game._assetsCtrl.loadLevel();
         this._game.engine.displayLoadingUI();
 
-        // hide loading screen
-        this._game.engine.hideLoadingUI();
+        // start scene
         await this.startGame();
     }
 
     async startGame() {
-        // set inputs
+        // add interface to game
         this._interface = new InterfaceController(this._scene, this._engine, this);
 
-        ///////////////////////////////////////////////////////////////////////////
-        /////////////////////////// COLYSEUS STATE
+        // hide loading screen
+        this._game.engine.hideLoadingUI();
+
+        //
         this.$ = getStateCallbacks(this.room);
 
-        ////////////////////// PLAYERS
-        this.$(this.room.state).players.onAdd((entity, sessionId) => {
-            console.log("[GAME] PLAYER ADDED", entity);
-            let currentPlayer = sessionId === this.sessionId;
-            this.entities.set(sessionId, new Entity(sessionId, this._scene, this, entity, currentPlayer));
+        // colyseus callbacks
+        this.$(this.room.state).players.onAdd((schema, sessionId) => {
+            console.log("[GAME] PLAYER ADDED", schema);
+            this.entities.set(sessionId, new Entity(sessionId, this._scene, this, schema, sessionId === this.sessionId));
         });
-        this.$(this.room.state).players.onRemove((entity, sessionId) => {
-            console.log("[GAME] PLAYER LEFT", entity);
-            if (this.entities.get(sessionId)) {
-                this.entities.get(sessionId).delete();
-            }
+        this.$(this.room.state).players.onRemove((schema, sessionId) => {
+            console.log("[GAME] PLAYER LEFT", schema);
             this.entities.delete(sessionId);
         });
-
-        ////////////////////// END COLYSEUS STATE
-        /////////////////////////////////////////////////////////////////////////////
 
         ////////////////////////////////////////////////////
         // main game loop

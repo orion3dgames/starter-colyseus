@@ -6,12 +6,14 @@ import { Engine } from "@babylonjs/core/Engines/engine";
 import { Scene } from "@babylonjs/core/scene";
 import { AssetsController } from "./AssetsController";
 import { AssetContainer } from "@babylonjs/core/assetContainer";
+import { LoadingController } from "./LoadingController";
 
 export class GameController {
     // core
     public engine: Engine;
     public scene: Scene;
     public network: NetworkController;
+    public _loading: LoadingController;
     public config: Config;
     public canvas;
 
@@ -47,8 +49,29 @@ export class GameController {
             displayName: generateUserName(),
         };
 
+        // create loading controller
+        this._loading = new LoadingController("Loading Assets...");
+        this.engine.loadingScreen = this._loading;
+
         // create colyseus client
         this.network = new NetworkController(app.config.port);
+
+        //
+        this.fixForAudio();
+    }
+
+    /**
+     * Allow audio to be played
+     */
+    fixForAudio(): void {
+        // fix
+        window.addEventListener(
+            "click",
+            () => {
+                Engine.audioEngine.unlock();
+            },
+            { once: true }
+        );
     }
 
     /////////////////////////////////////////

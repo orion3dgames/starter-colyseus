@@ -9,7 +9,6 @@ if (process.env.NODE_ENV !== "production") {
 // bjs post: https://forum.babylonjs.com/t/pickedmesh-is-null-in-onpointerobservable-after-update-to-6-25-0/45076/7
 // bjs docs: https://doc.babylonjs.com/setup/frameworkPackages/es6Support#faq
 // import("@babylonjs/core");
-
 import "@babylonjs/core/Lights/Shadows/shadowGeneratorSceneComponent";
 import "@babylonjs/core/Loading/loadingScreen";
 import "@babylonjs/core/Animations/animatable";
@@ -17,12 +16,8 @@ import "@babylonjs/loaders/glTF/2.0/glTFLoader";
 import "@babylonjs/loaders/glTF/2.0/Extensions/KHR_materials_pbrSpecularGlossiness";
 import "@babylonjs/loaders/glTF/2.0/Extensions/KHR_draco_mesh_compression";
 import "@babylonjs/core/Audio/audioSceneComponent";
-/*
-import "@babylonjs/core/Culling/ray";
-import "@babylonjs/core/Rendering/depthRendererSceneComponent";
-import "@babylonjs/core/Rendering/outlineRenderer";
-*/
 
+//
 import { Engine } from "@babylonjs/core/Engines/engine";
 
 // IMPORT SCREEN
@@ -60,14 +55,6 @@ class App {
         if (Engine.audioEngine) {
             Engine.audioEngine.useCustomUnlockedButton = true;
         }
-
-        window.addEventListener(
-            "click",
-            () => {
-                Engine.audioEngine.unlock();
-            },
-            { once: true }
-        );
 
         // preload game data
         this.game = new GameController(this);
