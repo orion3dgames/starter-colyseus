@@ -58,6 +58,16 @@ export class PlayerSchema extends Schema {
         }
 
         this.sequence = sequence;
+
+        let debug = {
+            x: this.x,
+            y: this.y,
+            z: this.z,
+            rot: this.rot,
+            sequence: this.sequence,
+        };
+
+        console.table(debug);
     }
 
     update(dt) {}
