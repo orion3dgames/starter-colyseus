@@ -6,6 +6,8 @@ import { Rectangle } from "@babylonjs/gui/2D/controls/rectangle";
 import { TextBlock, TextWrapping } from "@babylonjs/gui/2D/controls/textBlock";
 import { GameScene } from "../Scenes/GameScene";
 import { GameController } from "./GameController";
+import { Button } from "@babylonjs/gui/2D/controls/button";
+import { Control } from "@babylonjs/gui/2D/controls/control";
 
 export class InterfaceController {
     public _scene: Scene;
@@ -46,5 +48,22 @@ export class InterfaceController {
         this._DebugBox = new DebugBox(this, entity);
     }
 
-    create(gameScene) {}
+    create(gameScene) {
+        const reviveButton = Button.CreateSimpleButton("reviveButton", "TOGGLE SERVER MOVEMENT");
+        reviveButton.top = "15px;";
+        reviveButton.left = "15px;";
+        reviveButton.width = "250px;";
+        reviveButton.height = "45px";
+        reviveButton.color = "white";
+        reviveButton.background = "#000";
+        reviveButton.thickness = 1;
+        reviveButton.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
+        reviveButton.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
+        this._ui.addControl(reviveButton);
+
+        reviveButton.onPointerDownObservable.add(() => {
+            this._game.activateServerMovement = !this._game.activateServerMovement;
+            console.log(this._game.activateServerMovement);
+        });
+    }
 }

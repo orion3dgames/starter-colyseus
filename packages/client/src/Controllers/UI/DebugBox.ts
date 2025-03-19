@@ -69,6 +69,7 @@ export class DebugBox {
         locationText += "z: " + roundTo(this._entity.position.z, 2) + " ---> " + this._entity.z + "\n";
         locationText += "RotY: " + roundTo(this._entity.rotation.y, 2) + "\n";
         locationText += "Seq: " + this._entity.sequence + "\n";
+        locationText += "debug: " + this._entity._game.activateServerMovement + "\n";
         this._debugTextUI.text = locationText;
     }
 }
