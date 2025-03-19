@@ -1,7 +1,6 @@
 import { KeyboardEventTypes } from "@babylonjs/core/Events/keyboardEvents";
 import { Scene } from "@babylonjs/core/scene";
 import { Entity } from "../Entity";
-import { Room } from "colyseus.js";
 import { MoveController } from "./MoveController";
 import { PointerEventTypes } from "@babylonjs/core/Events/pointerEvents";
 import { CameraController } from "./CameraController";
@@ -10,23 +9,16 @@ import { roundTo } from "../../Utils/Utils";
 export class InputController {
     private _camera: CameraController;
     private _scene: Scene;
-    private _room: Room;
     private _movement: MoveController;
     private needsUpdate: boolean = false;
     public moveKeys = { forward: false, backward: false, left: false, right: false };
     public rightMouseDown: boolean = false;
-    public isRotating: boolean = false;
-
-    // Throttling properties
-    private lastUpdateTime: number = 0;
-    private readonly movementSendRate: number;
+    public isCameraRotating: boolean = false;
 
     constructor(entity: Entity) {
         this._camera = entity._camera;
         this._movement = entity._movement;
         this._scene = entity._scene;
-        this._room = entity._room;
-        this.movementSendRate = entity._game.config.movementSendRate;
 
         this._setupInputListeners();
     }
@@ -48,7 +40,7 @@ export class InputController {
             switch (pointerInfo.type) {
                 case PointerEventTypes.POINTERDOWN:
                     if (pointerInfo.event.button === 0) {
-                        this.isRotating = true;
+                        this.isCameraRotating = true;
                     }
                     if (pointerInfo.event.button === 2) {
                         this.rightMouseDown = true;
@@ -56,7 +48,7 @@ export class InputController {
                     break;
                 case PointerEventTypes.POINTERUP:
                     if (pointerInfo.event.button === 0) {
-                        this.isRotating = false;
+                        this.isCameraRotating = false;
                         this._camera.offsetRotationTarget = 0;
                     }
                     if (pointerInfo.event.button === 2) {
@@ -64,7 +56,7 @@ export class InputController {
                     }
                     break;
                 case PointerEventTypes.POINTERMOVE:
-                    if (this.isRotating) {
+                    if (this.isCameraRotating) {
                         let offset = roundTo(pointerInfo.event.movementX * 0.3, 0);
                         this._camera.offsetRotationTarget = offset; // Rotate camera horizontally
                         console.log(this._camera.offsetRotationTarget);
@@ -141,11 +133,9 @@ export class InputController {
     }
 
     update() {
-        const currentTime = Date.now();
-        if (!this.needsUpdate || currentTime - this.lastUpdateTime < this.movementSendRate) {
+        if (!this.needsUpdate) {
             return;
         }
-        this.lastUpdateTime = currentTime;
 
         let horizontal = 0; // Forward/backward movement
         let vertical = 0; // Left/right movement

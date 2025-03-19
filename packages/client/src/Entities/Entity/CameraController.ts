@@ -46,7 +46,9 @@ export class CameraController {
         }
     }
 
-    tween(player) {
-        this._cameraRoot.position = new Vector3(player.position.x, player.position.y, player.position.z);
+    public backToDefaultRotation(_player) {
+        if (!_player._input.isCameraRotating) {
+            this.goBackToDefault = true;
+        }
     }
 }

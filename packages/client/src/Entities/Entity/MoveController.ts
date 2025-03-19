@@ -4,16 +4,16 @@ import { Entity } from "../Entity";
 import { Scene } from "@babylonjs/core/scene";
 
 export class MoveController {
-    private _player: Entity; // The player entity being controlled
-    private _room; // The current game room or session
-    private _game; // The game instance
-    private _scene: Scene; // The Babylon.js scene where the player is rendered
+    private _player: Entity;
+    private _room;
+    private _game;
+    private _scene: Scene;
+
+    private targetPosition: Vector3;
+    private targetRotation: Vector3;
+
     public playerInputs: PlayerInputs[] = []; // Stores the player's movement inputs for prediction/reconciliation
     private playerLatestSequence: number; // Tracks the sequence number of the last processed move by the server
-
-    private targetPosition: Vector3; // The target position where the player should move
-    private targetRotation: Vector3; // The target rotation (yaw) for the player
-
     private sequence: number = 0; // Sequence counter to track the order of player inputs
 
     constructor(player: Entity) {
@@ -36,8 +36,8 @@ export class MoveController {
 
     // Moves the player based on input values for horizontal and vertical movement
     public move(horizontal: number, vertical: number) {
-        let speed = this._player.speed; // Player's movement speed
-        let turnSpeed = this._player.turnSpeed; // Player's rotation speed
+        let speed = this._player.speed;
+        let turnSpeed = this._player.turnSpeed;
 
         // Calculate forward movement in the X and Z directions based on the current rotation
         let forwardX = Math.sin(this.targetRotation.y) * horizontal * speed;
@@ -49,8 +49,8 @@ export class MoveController {
 
         // Rotate player left/right only when right mouse is not held
         if (!this._player._input.rightMouseDown) {
-            if (vertical > 0) this.targetRotation.y -= turnSpeed; // Turn left
-            if (vertical < 0) this.targetRotation.y += turnSpeed; // Turn right
+            if (vertical > 0) this.targetRotation.y -= turnSpeed;
+            if (vertical < 0) this.targetRotation.y += turnSpeed;
         } else {
             // Calculate strafe movement (perpendicular to forward direction)
             strafeX = Math.cos(this.targetRotation.y) * vertical * speed;
@@ -61,13 +61,12 @@ export class MoveController {
         this.targetPosition.x += forwardX + strafeX;
         this.targetPosition.z += forwardZ + strafeZ;
 
-        //
-        this._player._camera.goBackToDefault = true;
+        // make sure the camera returns to default position
+        this._player._camera.backToDefaultRotation(this._player);
     }
 
     // Smoothly interpolate the player's position and rotation towards the target
     public update(tween: number = 0.2) {
-        // Smoothly move the player's position and rotation to the target position and rotation
         Vector3.LerpToRef(this._player.position, this.targetPosition, tween, this._player.position);
         Vector3.LerpToRef(this._player.rotation, this.targetRotation, tween, this._player.rotation);
     }

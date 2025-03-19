@@ -17,6 +17,7 @@ import { CameraController } from "../Entities/Entity/CameraController";
 import { InterfaceController } from "../Controllers/InterfaceController";
 
 import { Room } from "colyseus.js";
+import { MeshController } from "./Entity/MeshController";
 
 export class Entity extends TransformNode {
     public _camera: CameraController;
@@ -26,12 +27,13 @@ export class Entity extends TransformNode {
     public _input: InputController;
     public _nameplate: NameplateController;
     public _movement: MoveController;
+    public _mesh: MeshController;
     public _room: Room;
     public _shadow: ShadowGenerator;
 
     // entities
     public _entities;
-    public _entity;
+    public _schema; // colyseus schema
 
     // mesh
     public playerMesh: Mesh;
@@ -52,7 +54,7 @@ export class Entity extends TransformNode {
     public rot: number = 0;
     public sequence: number = 0;
 
-    constructor(name: string, scene: Scene, gameScene: GameScene, entity, isCurrentPlayer = false) {
+    constructor(name: string, scene: Scene, gameScene: GameScene, schema, isCurrentPlayer = false) {
         super(name, scene);
 
         // set variables
@@ -63,23 +65,21 @@ export class Entity extends TransformNode {
         this._interface = gameScene._interface;
         this._shadow = gameScene._shadow;
         this._entities = gameScene.entities;
-        this._entity = entity;
+        this._schema = schema;
         this.isCurrentPlayer = isCurrentPlayer;
         this.sessionId = name;
 
         // set entity
-        Object.assign(this, entity);
+        Object.assign(this, schema);
 
         // set initial position & roation
-        this.position = new Vector3(entity.x, entity.y, entity.z);
-        this.rotation = new Vector3(0, entity.rot, 0);
+        this.position = new Vector3(this.x, this.y, this.z);
+        this.rotation = new Vector3(0, this.rot, 0);
 
-        // spawn player
-        this.spawn();
-
-        // move controller
+        // controllers
         this._movement = new MoveController(this);
         this._nameplate = new NameplateController(this);
+        this._mesh = new MeshController(this);
 
         // if current player
         if (isCurrentPlayer) {
@@ -89,51 +89,37 @@ export class Entity extends TransformNode {
             this._interface.setCurrentPlayer(this);
         }
 
+        // spawn player
+        this._mesh.spawn();
+
         // update from server
-        gameScene.$(this._entity).onChange((test) => {
+        gameScene.$(this._schema).onChange((test) => {
             let debug = {
-                x: this._entity.x,
-                y: this._entity.y,
-                z: this._entity.z,
-                rot: this._entity.rot,
-                sequence: this._entity.sequence,
+                x: this._schema.x,
+                y: this._schema.y,
+                z: this._schema.z,
+                rot: this._schema.rot,
+                sequence: this._schema.sequence,
             };
 
             console.table(debug);
 
             if (this._game.activateServerMovement) {
                 // update player data from server data
-                Object.assign(this, this._entity);
+                Object.assign(this, this._schema);
 
                 // set default position
-                this._movement.setPositionAndRotation(entity); // set next default position from server entity
+                this._movement.setPositionAndRotation(this._schema); // set next default position from server entity
 
                 // do server reconciliation on client if current player only & not blocked
                 if (this.isCurrentPlayer) {
-                    this._movement.reconcileMove(this._entity.sequence); // set default entity position
+                    this._movement.reconcileMove(this._schema.sequence); // set default entity position
                 }
             }
         });
 
         // show entity label
         this.nameplateMesh = this._nameplate.addNamePlate();
-    }
-
-    public spawn() {
-        // square
-        let boxSize = 1;
-        //const box = MeshBuilder.CreateCapsule("box", { height: boxSize, radius: boxSize / 4 }, this._scene);
-        const box = MeshBuilder.CreateBox("box", { height: boxSize, width: boxSize }, this._scene);
-        box.position = new Vector3(0, boxSize / 2, 0);
-        const material = new StandardMaterial("box-material", this._scene);
-        material.diffuseColor = Color3.FromHexString("#FFFFFF");
-        material.specularColor = Color3.Black();
-        box.material = material;
-        box.parent = this;
-        this.playerMesh = box;
-
-        // add player shadow
-        this._shadow.addShadowCaster(box);
     }
 
     public update(delta: number) {
@@ -144,7 +130,6 @@ export class Entity extends TransformNode {
         // update only for current player
         if (this.isCurrentPlayer) {
             this._input.update();
-            //this._camera.tween(this);
         }
     }
 
