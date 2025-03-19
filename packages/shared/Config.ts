@@ -15,7 +15,7 @@ class Config {
 
     // players
     defaultSpeed = 0.5;
-    defaultTurnSpeed = 0.1;
+    defaultTurnSpeed = 0.2;
 
     // theme
     fontFamily = "luckiest_guy";

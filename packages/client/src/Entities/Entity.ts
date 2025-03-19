@@ -3,11 +3,11 @@ import { Color3 } from "@babylonjs/core/Maths/math.color";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import { Scene } from "@babylonjs/core/scene";
-
 import { Engine } from "@babylonjs/core/Engines/engine";
 import { GameScene } from "../Scenes/GameScene";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import { Mesh } from "@babylonjs/core/Meshes/mesh";
+import { ShadowGenerator } from "@babylonjs/core/Lights/Shadows/shadowGenerator";
 
 import { MoveController } from "./Entity/MoveController";
 import { GameController } from "src/Controllers/GameController";
@@ -16,16 +16,18 @@ import { InputController } from "./Entity/InputController";
 import { CameraController } from "../Entities/Entity/CameraController";
 import { InterfaceController } from "../Controllers/InterfaceController";
 
+import { Room } from "colyseus.js";
+
 export class Entity extends TransformNode {
     public _camera: CameraController;
     public _engine: Engine;
     public _game: GameController;
-    public _room;
-    public _shadow;
     public _interface: InterfaceController;
     public _input: InputController;
     public _nameplate: NameplateController;
     public _movement: MoveController;
+    public _room: Room;
+    public _shadow: ShadowGenerator;
 
     // entities
     public _entities;
@@ -45,7 +47,7 @@ export class Entity extends TransformNode {
     public x: number = 0;
     public y: number = 0;
     public z: number = 0;
-    public speed: number = 1;
+    public speed: number = 0.5;
     public turnSpeed = 0.1; // Rotation speed
     public rot: number = 0;
     public sequence: number = 0;
@@ -81,9 +83,9 @@ export class Entity extends TransformNode {
 
         // if current player
         if (isCurrentPlayer) {
-            this._input = new InputController(this);
             this._camera = new CameraController(scene);
-            this._camera.createUniversalCamera(this._scene);
+            this._camera.createFollowCamera(this._scene, this);
+            this._input = new InputController(this);
             this._interface.setCurrentPlayer(this);
         }
 
@@ -100,14 +102,14 @@ export class Entity extends TransformNode {
             console.table(debug);
 
             // update player data from server data
-            Object.assign(this, this._entity);
+            //Object.assign(this, this._entity);
 
             // set default position
-            this._movement.setPositionAndRotation(entity); // set next default position from server entity
+            //this._movement.setPositionAndRotation(entity); // set next default position from server entity
 
             // do server reconciliation on client if current player only & not blocked
             if (this.isCurrentPlayer) {
-                this._movement.reconcileMove(this._entity.sequence); // set default entity position
+                //this._movement.reconcileMove(this._entity.sequence); // set default entity position
             }
         });
 
@@ -135,11 +137,12 @@ export class Entity extends TransformNode {
     public update(delta: number) {
         // update entity movement
         this._movement.update();
+        this._camera.update();
 
         // update only for current player
         if (this.isCurrentPlayer) {
             this._input.update();
-            this._camera.tween(this);
+            //this._camera.tween(this);
         }
     }
 

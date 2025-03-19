@@ -60,6 +60,9 @@ export class MoveController {
         // Update the player's target position based on forward and strafe movement
         this.targetPosition.x += forwardX + strafeX;
         this.targetPosition.z += forwardZ + strafeZ;
+
+        //
+        this._player._camera.goBackToDefault = true;
     }
 
     // Smoothly interpolate the player's position and rotation towards the target
