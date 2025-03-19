@@ -2,68 +2,76 @@ import { Scene } from "@babylonjs/core/scene";
 import { AdvancedDynamicTexture } from "@babylonjs/gui/2D/advancedDynamicTexture";
 import { DebugBox } from "./UI/DebugBox";
 import { Engine } from "@babylonjs/core/Engines/engine";
-import { Rectangle } from "@babylonjs/gui/2D/controls/rectangle";
-import { TextBlock, TextWrapping } from "@babylonjs/gui/2D/controls/textBlock";
 import { GameScene } from "../Scenes/GameScene";
 import { GameController } from "./GameController";
 import { Button } from "@babylonjs/gui/2D/controls/button";
 import { Control } from "@babylonjs/gui/2D/controls/control";
+import { Entity } from "../Entities/Entity";
+import { ServerMsg } from "@shared/types";
 
 export class InterfaceController {
     public _scene: Scene;
-    private _engine: Engine;
+    public _engine: Engine;
     public _game: GameController;
-    public _entities;
+    public _entities: Map<number, Entity>;
     public _room;
-    public _currentPlayer;
 
-    public _ui: AdvancedDynamicTexture;
-    public _uiLabels: AdvancedDynamicTexture;
+    // ui layers
+    public _backLayer: AdvancedDynamicTexture;
+    public _mainLayer: AdvancedDynamicTexture;
+    public _frontLayer: AdvancedDynamicTexture;
 
+    // ui controllers
     public _DebugBox: DebugBox;
 
-    constructor(scene, engine, gameScene: GameScene) {
+    // vars
+    public ping: number = 0;
+
+    constructor(scene: Scene, engine: Engine, gameScene: GameScene) {
         this._scene = scene;
         this._engine = engine;
         this._game = gameScene._game;
         this._entities = gameScene.entities;
         this._room = gameScene._game.joinedRoom;
 
-        // create ui
-        this._uiLabels = AdvancedDynamicTexture.CreateFullscreenUI("UI_Names", true, this._scene);
-
         // create adt
-        this._ui = AdvancedDynamicTexture.CreateFullscreenUI("UI_Player", true, this._scene);
+        this._backLayer = AdvancedDynamicTexture.CreateFullscreenUI("UI_BackLayer", true, this._scene);
+        this._mainLayer = AdvancedDynamicTexture.CreateFullscreenUI("UI_MainLayer", true, this._scene);
+        this._frontLayer = AdvancedDynamicTexture.CreateFullscreenUI("UI_FrontLayer", true, this._scene);
 
-        // create base ui
-        this.create(gameScene);
+        // debug button
+        this.createDebug();
+
+        // on pong
+        this._room.onMessage(ServerMsg.PONG, (data) => {
+            let dateNow = Date.now();
+            this.ping = dateNow - data.date;
+        });
     }
 
     update() {
-        console.log();
         this._DebugBox.update();
     }
 
-    setCurrentPlayer(entity) {
+    setCurrentPlayer(entity: Entity) {
         this._DebugBox = new DebugBox(this, entity);
     }
 
-    create(gameScene) {
-        const reviveButton = Button.CreateSimpleButton("reviveButton", "TOGGLE SERVER MOVEMENT");
-        reviveButton.top = "15px;";
-        reviveButton.left = "15px;";
-        reviveButton.width = "250px;";
-        reviveButton.height = "45px";
-        reviveButton.color = "white";
-        reviveButton.background = "#000";
-        reviveButton.thickness = 1;
-        reviveButton.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
-        reviveButton.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
-        this._ui.addControl(reviveButton);
+    createDebug() {
+        const simpleButton = Button.CreateSimpleButton("simpleButton", "TOGGLE SERVER MOVEMENT");
+        simpleButton.top = "15px;";
+        simpleButton.left = "15px;";
+        simpleButton.width = "250px;";
+        simpleButton.height = "45px";
+        simpleButton.color = "white";
+        simpleButton.background = "#000";
+        simpleButton.thickness = 1;
+        simpleButton.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
+        simpleButton.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
+        this._mainLayer.addControl(simpleButton);
 
-        reviveButton.onPointerDownObservable.add(() => {
+        simpleButton.onPointerDownObservable.add(() => {
             this._game.activateServerMovement = !this._game.activateServerMovement;
-            console.log(this._game.activateServerMovement);
         });
     }
 }

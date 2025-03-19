@@ -1,5 +1,5 @@
 // colyseus
-import { Client, Room } from "colyseus.js";
+import { Client } from "colyseus.js";
 import { isLocal } from "../Utils/Utils";
 
 export class NetworkController {
