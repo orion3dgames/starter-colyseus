@@ -11,11 +11,11 @@ class Config {
     databaseUpdateRate = 10000; // the frequency at which server save players position
 
     // client settings
-    movementSendRate = 100; // Set frequency the client input are sent to server when changed, in milliseconds
+    movementSendRate = 50; // Set frequency the client input are sent to server when changed, in milliseconds
 
     // players
-    defaultSpeed = 0.5;
-    defaultTurnSpeed = 0.2;
+    defaultSpeed = 0.2;
+    defaultTurnSpeed = 0.08;
 
     // theme
     fontFamily = "luckiest_guy";

@@ -19,9 +19,9 @@ export class CameraController {
     createFollowCamera(scene, player) {
         const camera = new FollowCamera("FollowCam", new Vector3(0, 5, -10), scene);
         camera.radius = 10;
-        camera.heightOffset = 5;
+        camera.heightOffset = 6;
         camera.rotationOffset = 180;
-        camera.cameraAcceleration = 0.1;
+        camera.cameraAcceleration = 0.2;
         camera.maxCameraSpeed = 5;
         // Attach Camera to Player
         camera.lockedTarget = player;
@@ -33,7 +33,7 @@ export class CameraController {
         this.camera.rotationOffset -= this.offsetRotationTarget;
 
         // Return camera to default position
-        if (this.goBackToDefault) {
+        if (this.goBackToDefault && this.camera.rotationOffset !== this.offsetRotationDefault) {
             if (this.camera.rotationOffset > this.offsetRotationDefault) {
                 this.camera.rotationOffset -= 1;
             } else {
