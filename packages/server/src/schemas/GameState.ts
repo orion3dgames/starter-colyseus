@@ -7,4 +7,11 @@ export class GameState extends Schema {
     constructor(args) {
         super();
     }
+
+    public update(dt) {
+        // update players
+        this.players.forEach((entity) => {
+            entity.update(dt);
+        });
+    }
 }
