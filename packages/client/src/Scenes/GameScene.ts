@@ -1,6 +1,6 @@
 import { Scene } from "@babylonjs/core/scene";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
-import { Color4 } from "@babylonjs/core/Maths/math.color";
+import { Color3, Color4 } from "@babylonjs/core/Maths/math.color";
 
 import { GameController } from "../Controllers/GameController";
 import { SceneName, ServerMsg } from "../../../shared/types";
@@ -15,6 +15,7 @@ import { SkyMaterial } from "@babylonjs/materials/sky/skyMaterial";
 import { getStateCallbacks } from "colyseus.js";
 import { GridMaterial } from "@babylonjs/materials/grid/gridMaterial";
 import { CameraController } from "../Entities/Entity/CameraController";
+import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
 
 export class GameScene {
     public _game: GameController;
@@ -48,6 +49,11 @@ export class GameScene {
         //
         this._game.engine.displayLoadingUI();
 
+        // initialize assets controller & load level
+        this._game.initializeAssetController();
+        await this._game._assetsCtrl.loadLevel();
+        this._game.engine.displayLoadingUI();
+
         // set sky color
         this._scene.clearColor = new Color4(0.1, 0.1, 0.1, 1);
 
@@ -78,6 +84,13 @@ export class GameScene {
         plane.rotation.x = Math.PI / 2;
         plane.receiveShadows = true;
 
+        /*
+        const texture = this._game._loadedAssets["GRASS_01"];
+        const material = new StandardMaterial("grass", this._scene);
+        material.specularColor = Color3.Black();
+        material.diffuseTexture = texture;
+        */
+
         var grid = new GridMaterial("groundMaterial", scene);
         grid.gridRatio = 0.1;
         plane.material = grid;
@@ -91,11 +104,6 @@ export class GameScene {
         // set room
         this.room = this._game.joinedRoom;
         this.sessionId = this.room.sessionId;
-
-        // initialize assets controller & load level
-        this._game.initializeAssetController();
-        await this._game._assetsCtrl.loadLevel();
-        this._game.engine.displayLoadingUI();
 
         // start scene
         await this.startGame();

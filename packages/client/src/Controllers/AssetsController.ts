@@ -35,7 +35,10 @@ export class AssetsController {
         this._assetsManager = new AssetsManager(this._game.scene);
 
         // set list of assets
-        this.assetDatabase = [{ key: "PLAYER_01", filename: "skeleton_01.glb", extension: "glb", type: "mesh", instantiate: true }];
+        this.assetDatabase = [
+            { key: "PLAYER_01", filename: "skeleton_01.glb", extension: "glb", type: "mesh", instantiate: true },
+            { key: "GRASS_01", filename: "grass_01.jpg", extension: "jpg", type: "texture" },
+        ];
     }
 
     public async preloadAssets() {
