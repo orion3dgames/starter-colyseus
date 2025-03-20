@@ -89,10 +89,10 @@ export class NameplateController {
     }
 
     getEntityheight(offset_y) {
-        if (!this._entity.playerMesh) {
+        if (!this._entity._mesh.entityMesh) {
             return 1;
         }
-        let extendSize = this._entity.playerMesh.getBoundingInfo().boundingBox.extendSize.y ?? 1;
+        let extendSize = this._entity._mesh.entityMesh.getBoundingInfo().boundingBox.extendSize.y ?? 1;
         return extendSize * 2 + offset_y;
     }
 

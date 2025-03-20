@@ -7,7 +7,7 @@ import { GameController } from "./GameController";
 import { Button } from "@babylonjs/gui/2D/controls/button";
 import { Control } from "@babylonjs/gui/2D/controls/control";
 import { Entity } from "../Entities/Entity";
-import { ServerMsg } from "@shared/types";
+import { ServerMsg } from "../../../shared/types";
 
 export class InterfaceController {
     public _scene: Scene;
