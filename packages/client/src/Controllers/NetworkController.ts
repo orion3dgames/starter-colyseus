@@ -28,6 +28,7 @@ export class NetworkController {
             url = window.location.hostname + ":" + this.port;
         }
         const response = await axios.get("/rooms/?roomName=" + hash, {
+            baseURL: url,
             allowAbsoluteUrls: true,
         });
         console.log("[requestRooms]", response);
