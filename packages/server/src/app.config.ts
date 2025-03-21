@@ -25,17 +25,15 @@ export default config({
 
     initializeExpress: (app) => {
         // matchmaker query
-        app.get("/rooms/:roomName?", (req, res) => {
+        app.get("/rooms/:roomName?", async (req, res) => {
             const conditions: any = {
                 locked: false,
                 private: false,
             };
-
             if (req.query.roomName) {
                 conditions["roomId"] = req.query.roomName;
             }
-            logger.info(req.query.roomName, conditions);
-            res.json(matchMaker.query(conditions));
+            res.json(await matchMaker.query(conditions));
         });
 
         // default to built client index.html

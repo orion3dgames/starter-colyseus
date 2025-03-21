@@ -122,10 +122,10 @@ export class Entity extends TransformNode {
     public update(delta: number) {
         // update entity movement
         this._movement.update();
-        this._camera.update();
 
         // update only for current player
         if (this.isCurrentPlayer) {
+            this._camera.update();
             this._input.update();
         }
     }

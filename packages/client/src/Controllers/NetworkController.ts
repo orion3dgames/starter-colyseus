@@ -38,8 +38,16 @@ export class NetworkController {
         }
         const response = await axios.get("/rooms/?roomName=" + hash);
         console.log("[requestRooms]", response);
-        if (response && response.data && response.data.roomsById && response.data.roomsById.length > 0 && response.data.roomsById[hash]) {
-            return response.data.roomsById[hash];
+        if (response && response.data && response.data.length > 0) {
+            let found = false;
+            for (let i = 0; i < response.data.length; i++) {
+                let room = response.data[i];
+                if (room.roomId === hash) {
+                    found = room;
+                    break;
+                }
+            }
+            return found;
         }
         return false;
     }
@@ -50,13 +58,22 @@ export class NetworkController {
             hash = "ABCD";
         }
 
-        // get all rooms
-        let foundRoom = await this.requestRooms(hash);
-        console.log("[joinOrCreate] found room ?", foundRoom);
+        // get all rooms;
+        let rooms = await this._client.http.get("/rooms/?roomName=" + hash);
+        console.log(rooms);
+        let foundRoom = false as any;
+        if (rooms.data && rooms.data.length > 0) {
+            for (let i = 0; i < rooms.data.length; i++) {
+                let room = rooms.data[i];
+                if (room.roomId === hash) {
+                    foundRoom = room;
+                    break;
+                }
+            }
+        }
 
         // if room doesn't exist, create it
         if (!foundRoom) {
-            console.log("Room does not exist", hash);
             return await this._client.create("gameroom", { roomId: hash, user: user });
         }
 
@@ -67,7 +84,7 @@ export class NetworkController {
         }
 
         // else join it;
-        console.log("room already exists, joining in progress... ", foundRoom);
+        console.log("room already exists ", foundRoom);
         return await this._client.joinById(hash, { user: user });
     }
 }
