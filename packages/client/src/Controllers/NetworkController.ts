@@ -45,6 +45,7 @@ export class NetworkController {
 
         // get all rooms
         let foundRoom = await this.requestRooms(hash);
+        console.log("[joinOrCreate] found room ?", foundRoom);
 
         // if room doesn't exist, create it
         if (!foundRoom) {
