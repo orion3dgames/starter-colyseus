@@ -65,8 +65,8 @@ export default class GameServer {
         // serve client
         let indexFile = path.resolve(indexPath + clientFile);
         app.get("/", function (req, res) {
-            res.send("Hello World!");
-            //res.sendFile(indexFile);
+            //res.send("Hello World!");
+            res.sendFile(indexFile);
         });
     }
 }
