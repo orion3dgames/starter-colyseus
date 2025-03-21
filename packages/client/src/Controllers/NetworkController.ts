@@ -29,7 +29,6 @@ export class NetworkController {
         }
         const response = await axios.get("/rooms/?roomName=" + hash, {
             baseURL: url,
-            allowAbsoluteUrls: true,
         });
         console.log("[requestRooms]", response);
         if (response && response.data && response.data.roomsById && response.data.roomsById.length > 0 && response.data.roomsById[hash]) {
