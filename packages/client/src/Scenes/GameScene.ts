@@ -125,6 +125,9 @@ export class GameScene {
         });
         this.$(this.room.state).players.onRemove((schema, sessionId) => {
             console.log("[GAME] PLAYER LEFT", schema);
+            if (this.entities.get(sessionId)) {
+                this.entities.get(sessionId).delete();
+            }
             this.entities.delete(sessionId);
         });
 

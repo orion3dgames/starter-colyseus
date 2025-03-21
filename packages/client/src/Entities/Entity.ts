@@ -137,7 +137,7 @@ export class Entity extends TransformNode {
 
     public delete() {
         if (this.playerMesh) {
-            this.playerMesh.dispose();
+            this._mesh.entityMesh.dispose();
         }
         if (this.nameplateMesh) {
             this.nameplateMesh.dispose();
