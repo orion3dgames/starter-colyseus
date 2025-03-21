@@ -57,21 +57,5 @@ export class InterfaceController {
         this._DebugBox = new DebugBox(this, entity);
     }
 
-    createDebug() {
-        const simpleButton = Button.CreateSimpleButton("simpleButton", "TOGGLE SERVER MOVEMENT");
-        simpleButton.top = "15px;";
-        simpleButton.left = "15px;";
-        simpleButton.width = "250px;";
-        simpleButton.height = "45px";
-        simpleButton.color = "white";
-        simpleButton.background = "#000";
-        simpleButton.thickness = 1;
-        simpleButton.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
-        simpleButton.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
-        this._mainLayer.addControl(simpleButton);
-
-        simpleButton.onPointerDownObservable.add(() => {
-            this._game.activateServerMovement = !this._game.activateServerMovement;
-        });
-    }
+    createDebug() {}
 }
