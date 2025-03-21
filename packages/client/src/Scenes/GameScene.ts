@@ -15,7 +15,6 @@ import { SkyMaterial } from "@babylonjs/materials/sky/skyMaterial";
 import { getStateCallbacks } from "colyseus.js";
 import { GridMaterial } from "@babylonjs/materials/grid/gridMaterial";
 import { CameraController } from "../Entities/Entity/CameraController";
-import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
 
 export class GameScene {
     public _game: GameController;

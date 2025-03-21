@@ -65,7 +65,6 @@ export class DebugBox {
             rotY: roundTo(this._entity.rotation.y, 2),
             seq: this._entity.sequence,
             speed: this._entity.speed,
-            debug: this._entity._game.activateServerMovement,
         };
 
         let debugText = "";
