@@ -33,7 +33,6 @@ export default class GameServer {
         const port = process.env.PORT || 3000;
         const app = express();
         app.use(cors());
-        app.use(express.json());
 
         //
         app.use("/colyseus", monitor());
@@ -53,13 +52,6 @@ export default class GameServer {
         // server staic files
         app.use(express.static(indexPath));
 
-        // serve client
-        let indexFile = path.resolve(indexPath + clientFile);
-        app.get("/", function (req, res) {
-            //res.send("Hello World!");
-            res.sendFile(indexFile);
-        });
-
         //////////////////////
 
         // create colyseus server
@@ -70,7 +62,7 @@ export default class GameServer {
         });
 
         // Expose the "lobby" room.
-        gameServer.define("gameroom", GameRoom).enableRealtimeListing();
+        gameServer.define("gameroom", GameRoom);
 
         gameServer.listen(port).then(() => {
             // server is now running
