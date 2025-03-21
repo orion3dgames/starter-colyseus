@@ -8,18 +8,27 @@ export class NetworkController {
     public port = 3000;
 
     constructor(port) {
-        // create colyseus client
         let url = "wss://" + window.location.hostname;
-        if (isLocal()) {
-            url = "ws://localhost:" + port;
-        }
         let options = {
             hostname: url,
             secure: false,
             port: port,
-        };
-        this._client = new Client(url);
+        } as any;
+
+        // create colyseus client
+        if (isLocal()) {
+            url = "ws://localhost:" + port;
+            options = {
+                hostname: url,
+                secure: false,
+                port: port,
+            };
+        }
+
+        this._client = new Client(options.url);
         this.port = port;
+
+        console.log(options);
     }
 
     public async requestRooms(hash) {
