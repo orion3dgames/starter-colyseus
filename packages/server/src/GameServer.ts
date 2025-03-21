@@ -6,7 +6,7 @@ import cors from "cors";
 import { Config } from "../../shared/Config";
 import Logger from "../../shared/Utils/Logger";
 
-import { Server, LobbyRoom } from "@colyseus/core";
+import { Server, matchMaker } from "@colyseus/core";
 import { WebSocketTransport } from "@colyseus/ws-transport";
 import { monitor } from "@colyseus/monitor";
 
@@ -33,6 +33,7 @@ export default class GameServer {
         const port = process.env.PORT || 3000;
         const app = express();
         app.use(cors());
+        app.use(express.json());
 
         // create colyseus server
         const gameServer = new Server({
@@ -42,7 +43,6 @@ export default class GameServer {
         });
 
         // Expose the "lobby" room.
-        gameServer.define("lobby", LobbyRoom);
         gameServer.define("gameroom", GameRoom).enableRealtimeListing();
 
         gameServer.listen(port).then(() => {
@@ -58,6 +58,18 @@ export default class GameServer {
 
         //
         app.use("/colyseus", monitor());
+
+        // matchmaker query
+        app.get("/rooms/:roomName?", (req, res) => {
+            const conditions: any = {
+                locked: false,
+                private: false,
+            };
+            if (req.query.roomName) {
+                conditions["roomId"] = req.query.roomName;
+            }
+            res.json(matchMaker.query(conditions));
+        });
 
         // server staic files
         app.use(express.static(indexPath));

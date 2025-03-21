@@ -1,9 +1,11 @@
 // colyseus
 import { Client } from "colyseus.js";
 import { isLocal } from "../Utils/Utils";
+import axios from "axios";
 
 export class NetworkController {
     public _client: Client;
+    public port = 3000;
 
     constructor(port) {
         // create colyseus client
@@ -17,6 +19,27 @@ export class NetworkController {
             port: port,
         };
         this._client = new Client(url);
+        this.port = port;
+    }
+
+    public async getRooms(hash) {
+        let url = window.location.hostname;
+        if (isLocal()) {
+            url = window.location.hostname + ":" + this.port;
+        }
+        console.log("URL 1: " + url);
+        const response = await axios.get("/rooms", {
+            allowAbsoluteUrls: true,
+            params: {
+                roomName: hash,
+            },
+        });
+        console.log(response);
+
+        if (response && response.data && response.data.roomsById && response.data.roomsById.length > 0 && response.data.roomsById[hash]) {
+            return response.data.roomsById[hash];
+        }
+        return false;
     }
 
     public async joinOrCreate(hash, user): Promise<any> {
@@ -25,9 +48,11 @@ export class NetworkController {
             hash = "ABCD";
         }
 
+        console.log(this._client, "TEST");
+
         // get all rooms;
-        let rooms = await this._client.http.get("/rooms/?roomName=" + hash);
-        let foundRoom = rooms.data.roomsById[hash];
+        //let rooms = await this._client.http.get("/rooms/?roomName=" + hash, {});
+        let foundRoom = await this.getRooms(hash);
 
         // if room doesn't exist, create it
         if (!foundRoom) {
@@ -41,7 +66,7 @@ export class NetworkController {
         }
 
         // else join it;
-        console.log("room already exists ", rooms.data.roomsById[hash]);
+        console.log("room already exists ", foundRoom);
         return await this._client.joinById(hash, { user: user });
     }
 }
