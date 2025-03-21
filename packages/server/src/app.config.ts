@@ -34,26 +34,23 @@ export default config({
 
         // serve client
         let indexFile = path.resolve(indexPath + clientFile);
-        app.get("/", function (req, res) {
+        app.get("/client", function (req, res) {
             res.sendFile(indexFile);
         });
 
         /**
          * Use @colyseus/playground
+         * Use @colyseus/monitor
          * (It is not recommended to expose this route in a production environment)
          */
         if (process.env.NODE_ENV !== "production") {
             app.use("/play", playground());
+            app.use("/monitor", monitor());
         }
 
         /**
-         * Use @colyseus/monitor
-         * It is recommended to protect this route with a password
-         * Read more: https://docs.colyseus.io/tools/monitor/#restrict-access-to-the-panel-using-a-password
+         * matchmaker query
          */
-        app.use("/monitor", monitor());
-
-        //
         app.get("/rooms/:roomName?", (req, res) => {
             const conditions: any = {
                 locked: false,
