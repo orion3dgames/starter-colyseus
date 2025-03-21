@@ -101,17 +101,15 @@ export class Entity extends TransformNode {
 
             console.table(debug);
 
-            if (this._game.activateServerMovement) {
-                // update player data from server data
-                Object.assign(this, this._schema);
+            // update player data from server data
+            Object.assign(this, this._schema);
 
-                // set default position
-                this._movement.setPositionAndRotation(this._schema); // set next default position from server entity
+            // set default position
+            this._movement.setPositionAndRotation(this._schema); // set next default position from server entity
 
-                // do server reconciliation on client if current player only & not blocked
-                if (this.isCurrentPlayer) {
-                    this._movement.reconcileMove(this._schema.sequence); // set default entity position
-                }
+            // do server reconciliation on client if current player only & not blocked
+            if (this.isCurrentPlayer) {
+                this._movement.reconcileMove(this._schema.sequence); // set default entity position
             }
         });
 

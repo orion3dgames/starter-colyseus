@@ -34,9 +34,6 @@ export class GameController {
     // network
     public joinedRoom;
 
-    // debug
-    public activateServerMovement: boolean = false;
-
     constructor(app) {
         // core
         this.engine = app.engine;
