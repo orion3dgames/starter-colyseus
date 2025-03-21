@@ -22,20 +22,15 @@ export class NetworkController {
         this.port = port;
     }
 
-    public async getRooms(hash) {
+    public async requestRooms(hash) {
         let url = window.location.hostname;
         if (isLocal()) {
             url = window.location.hostname + ":" + this.port;
         }
-        console.log("URL 1: " + url);
-        const response = await axios.get("/rooms", {
+        const response = await axios.get("/rooms/?roomName=" + hash, {
             allowAbsoluteUrls: true,
-            params: {
-                roomName: hash,
-            },
         });
-        console.log(response);
-
+        console.log("[requestRooms]", response);
         if (response && response.data && response.data.roomsById && response.data.roomsById.length > 0 && response.data.roomsById[hash]) {
             return response.data.roomsById[hash];
         }
@@ -48,14 +43,12 @@ export class NetworkController {
             hash = "ABCD";
         }
 
-        console.log(this._client, "TEST");
-
-        // get all rooms;
-        //let rooms = await this._client.http.get("/rooms/?roomName=" + hash, {});
-        let foundRoom = await this.getRooms(hash);
+        // get all rooms
+        let foundRoom = await this.requestRooms(hash);
 
         // if room doesn't exist, create it
         if (!foundRoom) {
+            console.log("Room does not exist", hash);
             return await this._client.create("gameroom", { roomId: hash, user: user });
         }
 
@@ -66,7 +59,7 @@ export class NetworkController {
         }
 
         // else join it;
-        console.log("room already exists ", foundRoom);
+        console.log("room already exists, joining in progress... ", foundRoom);
         return await this._client.joinById(hash, { user: user });
     }
 }

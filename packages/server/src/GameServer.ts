@@ -35,27 +35,6 @@ export default class GameServer {
         app.use(cors());
         app.use(express.json());
 
-        // create colyseus server
-        const gameServer = new Server({
-            transport: new WebSocketTransport({
-                server: createServer(app),
-            }),
-        });
-
-        // Expose the "lobby" room.
-        gameServer.define("gameroom", GameRoom).enableRealtimeListing();
-
-        gameServer.listen(port).then(() => {
-            // server is now running
-            Logger.info("[gameserver] listening on http://localhost:" + port);
-        });
-
-        // on localhost, simulate bad latency
-        if (process.env.NODE_ENV !== "production") {
-            Logger.info("[gameserver] Simulating 200ms of latency.");
-            gameServer.simulateLatency(200);
-        }
-
         //
         app.use("/colyseus", monitor());
 
@@ -80,5 +59,28 @@ export default class GameServer {
             //res.send("Hello World!");
             res.sendFile(indexFile);
         });
+
+        //////////////////////
+
+        // create colyseus server
+        const gameServer = new Server({
+            transport: new WebSocketTransport({
+                server: createServer(app),
+            }),
+        });
+
+        // Expose the "lobby" room.
+        gameServer.define("gameroom", GameRoom).enableRealtimeListing();
+
+        gameServer.listen(port).then(() => {
+            // server is now running
+            Logger.info("[gameserver] listening on http://localhost:" + port);
+        });
+
+        // on localhost, simulate bad latency
+        if (process.env.NODE_ENV !== "production") {
+            Logger.info("[gameserver] Simulating 200ms of latency.");
+            gameServer.simulateLatency(200);
+        }
     }
 }
