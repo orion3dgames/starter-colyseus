@@ -28,12 +28,14 @@ export default config({
     },
 
     initializeExpress: (app) => {
-        /**
-         * Bind your custom express routes here:
-         * Read more: https://expressjs.com/en/starter/basic-routing.html
-         */
-        app.get("/hello_world", (req, res) => {
-            res.send("It's time to kick ass and chew bubblegum!");
+        // default to built client index.html
+        let indexPath = "../../dist/client/";
+        let clientFile = "index.html";
+
+        // serve client
+        let indexFile = path.resolve(indexPath + clientFile);
+        app.get("/", function (req, res) {
+            res.sendFile(indexFile);
         });
 
         /**
@@ -41,7 +43,7 @@ export default config({
          * (It is not recommended to expose this route in a production environment)
          */
         if (process.env.NODE_ENV !== "production") {
-            app.use("/", playground());
+            app.use("/play", playground());
         }
 
         /**
