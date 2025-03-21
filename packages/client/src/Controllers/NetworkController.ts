@@ -27,9 +27,7 @@ export class NetworkController {
         if (isLocal()) {
             url = window.location.hostname + ":" + this.port;
         }
-        const response = await axios.get("/rooms/?roomName=" + hash, {
-            baseURL: url,
-        });
+        const response = await axios.get("/rooms/?roomName=" + hash);
         console.log("[requestRooms]", response);
         if (response && response.data && response.data.roomsById && response.data.roomsById.length > 0 && response.data.roomsById[hash]) {
             return response.data.roomsById[hash];
