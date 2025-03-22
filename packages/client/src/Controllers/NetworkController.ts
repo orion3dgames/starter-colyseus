@@ -5,7 +5,7 @@ import axios from "axios";
 
 export class NetworkController {
     public _client: Client;
-    public port = 3000;
+    public port;
 
     constructor(port) {
         let url = "wss://" + window.location.hostname;
@@ -25,18 +25,36 @@ export class NetworkController {
             };
         }
 
-        this._client = new Client(options.url);
+        this._client = new Client(options.hostname);
         this.port = port;
 
         console.log(options);
+
+        /*
+        // create colyseus client
+        let url = "wss://" + window.location.hostname;
+        if (isLocal()) {
+            url = "ws://localhost:" + port;
+        }
+        let options = {
+            hostname: url,
+            secure: false,
+            port: port,
+        };
+        this._client = new Client(url); */
     }
 
     public async requestRooms(hash) {
-        let url = window.location.hostname;
+        let options = {
+            baseURL: window.location.hostname,
+        };
         if (isLocal()) {
-            url = window.location.hostname + ":" + this.port;
+            options = {
+                baseURL: "http://" + window.location.hostname + ":" + this.port,
+            };
         }
-        const response = await axios.get("/rooms/?roomName=" + hash);
+        console.log(options);
+        const response = await axios.get("/rooms/?roomName=" + hash, options);
         console.log("[requestRooms]", response);
         if (response && response.data && response.data.length > 0) {
             let found = false;
@@ -59,7 +77,11 @@ export class NetworkController {
         }
 
         // get all rooms;
-        let rooms = await this._client.http.get("/rooms/?roomName=" + hash);
+        //let foundRoom = (await this.requestRooms(hash)) as any;
+
+        let url = "/rooms/?roomName=" + hash;
+        console.log(this._client.http);
+        let rooms = await this._client.http.get(url);
         console.log(rooms);
         let foundRoom = false as any;
         if (rooms.data && rooms.data.length > 0) {

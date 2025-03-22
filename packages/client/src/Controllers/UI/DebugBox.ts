@@ -52,8 +52,7 @@ export class DebugBox {
     // debug panel refresh
     public update() {
         let debugData = {
-            totalPlayers: countPlayers(this._scene.getMeshByName("player")),
-            roomId: this._room.roomId,
+            totalPlayers: countPlayers(this._entity._entities),
             sessionId: this._entity.sessionId,
             name: this._entity.name,
             totalEntities: 0,
