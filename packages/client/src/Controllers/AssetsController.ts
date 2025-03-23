@@ -10,6 +10,10 @@ import {
     TextureAssetTask,
 } from "@babylonjs/core/Misc/assetsManager";
 import { GameController } from "./GameController";
+import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
+import { Color3 } from "@babylonjs/core/Maths/math.color";
+import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
+import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 
 type AssetEntry = {
     key: string;
@@ -38,6 +42,7 @@ export class AssetsController {
         this.assetDatabase = [
             { key: "PLAYER_01", filename: "skeleton_01.glb", extension: "glb", type: "mesh", instantiate: true },
             { key: "GRASS_01", filename: "grass_01.jpg", extension: "jpg", type: "texture" },
+            { key: "TXT_shadow_01", filename: "shadow_01.png", extension: "png", type: "texture" },
         ];
     }
 
@@ -143,6 +148,34 @@ export class AssetsController {
     public async loadLevel() {
         this.assetToPreload = this.assetDatabase;
         await this.preloadAssets();
+        await this.prepareTextures();
+        await this.prepareDynamicMeshes();
+    }
+
+    public prepareTextures() {
+        // entity cheap shadow
+        var texture = this._game._loadedAssets["TXT_shadow_01"];
+        texture.hasAlpha = true;
+        var material = new StandardMaterial("entity_shadow");
+        material.diffuseTexture = texture;
+        material.alpha = 0.7;
+        material.useAlphaFromDiffuseTexture = true;
+        material.specularColor = Color3.Black();
+        material.emissiveColor = Color3.White(); // material to be fully "lit"
+    }
+
+    /**
+     * prepare meshes to be used as instances.
+     */
+    prepareDynamicMeshes() {
+        // add cheap shadow
+        var material = this._game.scene.getMaterialByName("entity_shadow");
+        let selectedMesh = MeshBuilder.CreatePlane("raw_entity_shadow", { width: 2, height: 2 }, this._game.scene);
+        selectedMesh.material = material;
+        selectedMesh.position = new Vector3(0, -10, 0);
+        selectedMesh.rotation = new Vector3(Math.PI / 2, 0, 0);
+        selectedMesh.isEnabled(false);
+        this._game._loadedAssets["DYNAMIC_shadow_01"] = selectedMesh;
     }
 
     private showLoadingMessage(msg) {

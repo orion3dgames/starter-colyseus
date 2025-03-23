@@ -27,47 +27,6 @@ export class NetworkController {
 
         this._client = new Client(options.hostname);
         this.port = port;
-
-        console.log(options);
-
-        /*
-        // create colyseus client
-        let url = "wss://" + window.location.hostname;
-        if (isLocal()) {
-            url = "ws://localhost:" + port;
-        }
-        let options = {
-            hostname: url,
-            secure: false,
-            port: port,
-        };
-        this._client = new Client(url); */
-    }
-
-    public async requestRooms(hash) {
-        let options = {
-            baseURL: window.location.hostname,
-        };
-        if (isLocal()) {
-            options = {
-                baseURL: "http://" + window.location.hostname + ":" + this.port,
-            };
-        }
-        console.log(options);
-        const response = await axios.get("/rooms/?roomName=" + hash, options);
-        console.log("[requestRooms]", response);
-        if (response && response.data && response.data.length > 0) {
-            let found = false;
-            for (let i = 0; i < response.data.length; i++) {
-                let room = response.data[i];
-                if (room.roomId === hash) {
-                    found = room;
-                    break;
-                }
-            }
-            return found;
-        }
-        return false;
     }
 
     public async joinOrCreate(hash, user): Promise<any> {
@@ -76,13 +35,9 @@ export class NetworkController {
             hash = "ABCD";
         }
 
-        // get all rooms;
-        //let foundRoom = (await this.requestRooms(hash)) as any;
-
+        // get all rooms to check if it already exists
         let url = "/rooms/?roomName=" + hash;
-        console.log(this._client.http);
         let rooms = await this._client.http.get(url);
-        console.log(rooms);
         let foundRoom = false as any;
         if (rooms.data && rooms.data.length > 0) {
             for (let i = 0; i < rooms.data.length; i++) {

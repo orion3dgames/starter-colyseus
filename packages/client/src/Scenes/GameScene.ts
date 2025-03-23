@@ -15,6 +15,8 @@ import { SkyMaterial } from "@babylonjs/materials/sky/skyMaterial";
 import { getStateCallbacks } from "colyseus.js";
 import { GridMaterial } from "@babylonjs/materials/grid/gridMaterial";
 import { CameraController } from "../Entities/Entity/CameraController";
+import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
+import { Texture } from "@babylonjs/core";
 
 export class GameScene {
     public _game: GameController;
@@ -44,9 +46,6 @@ export class GameScene {
 
         // set scene
         this._scene = scene;
-
-        //
-        this._game.engine.displayLoadingUI();
 
         // initialize assets controller & load level
         this._game.initializeAssetController();
@@ -83,16 +82,14 @@ export class GameScene {
         plane.rotation.x = Math.PI / 2;
         plane.receiveShadows = true;
 
-        /*
-        const texture = this._game._loadedAssets["GRASS_01"];
+        const texture = this._game._loadedAssets["GRASS_01"] as Texture;
+        texture.uScale = 60;
+        texture.vScale = 60;
         const material = new StandardMaterial("grass", this._scene);
         material.specularColor = Color3.Black();
         material.diffuseTexture = texture;
-        */
 
-        var grid = new GridMaterial("groundMaterial", scene);
-        grid.gridRatio = 0.1;
-        plane.material = grid;
+        plane.material = material;
 
         // setup colyseus room
         if (!this._game.joinedRoom) {
