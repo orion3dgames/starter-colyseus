@@ -4,10 +4,10 @@ import { GameRoom } from "../rooms/GameRoom";
 // State sync: Player structure
 export class PlayerSchema extends Schema {
     // visible to all
-    @type("float32") x: number = -22;
+    @type("float32") x: number = -8.7;
     @type("float32") y: number = 0;
-    @type("float32") z: number = -19.27;
-    @type("float32") rot: number = -5.44;
+    @type("float32") z: number = -8.75;
+    @type("float32") rot: number = -5.76;
     @type("string") name: string = "NAME";
 
     // only needs to be visible to current player

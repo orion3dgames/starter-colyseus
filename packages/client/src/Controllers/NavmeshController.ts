@@ -98,10 +98,10 @@ export class NavMeshController {
         this._debugMesh = customMesh;
     }
 
-    async generateNavmesh(level: GroundMesh) {
+    async generateNavmesh(meshs: []) {
         // Get the positions of the mesh
 
-        const [positions, indices] = this.getPositionsAndIndices([level]);
+        const [positions, indices] = this.getPositionsAndIndices(meshs);
 
         const navMeshConfig = {
             borderSize: 0,
