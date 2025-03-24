@@ -10,10 +10,13 @@ import { Entity } from "../Entities/Entity";
 import { InterfaceController } from "../Controllers/InterfaceController";
 import { DirectionalLight } from "@babylonjs/core/Lights/directionalLight";
 import { ShadowGenerator } from "@babylonjs/core/Lights/Shadows/shadowGenerator";
-import { getStateCallbacks } from "colyseus.js";
 import { CameraController } from "../Entities/Entity/CameraController";
 import { LevelGenerator } from "../Controllers/LevelGenerator";
-import { NavMeshController } from "../Controllers/NavMeshController";
+import { NavMeshController } from "../Controllers/NavmeshController";
+
+import { getStateCallbacks, Room } from "colyseus.js";
+import { SchemaCallbackProxy } from "@colyseus/schema";
+import type { GameState } from "../../../server/src/schemas/GameState";
 
 export class GameScene {
     public _game: GameController;
@@ -26,10 +29,10 @@ export class GameScene {
     public _environment;
     public _shadow: ShadowGenerator;
     public _camera: CameraController;
-    public room;
+    public room: Room<GameState>;
     public sessionId;
     public entities = new Map();
-    public $;
+    public $: SchemaCallbackProxy<GameState>;
 
     constructor() {
         this._newState = SceneName.NULL;

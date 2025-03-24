@@ -70,11 +70,9 @@ export class GameRoom extends Room<GameState> {
         Logger.info("[gameserver] player connected ", this.roomId);
 
         const player = new PlayerSchema(auth, client, this);
-
-        client.view = new StateView();
-
         this.state.players.set(client.sessionId, player);
 
+        client.view = new StateView();
         client.view.add(player);
     }
 
