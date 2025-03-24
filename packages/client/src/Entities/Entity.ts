@@ -15,7 +15,8 @@ import { InterfaceController } from "../Controllers/InterfaceController";
 
 import { Room } from "colyseus.js";
 import { MeshController } from "./Entity/MeshController";
-import { NavMeshController } from "../Controllers/NavMeshController";
+import { NavMeshController } from "../Controllers/NavmeshController";
+import type { PlayerSchema } from "../../../server/src/schemas/PlayerSchema";
 
 export class Entity extends TransformNode {
     public _camera: CameraController;
@@ -32,7 +33,7 @@ export class Entity extends TransformNode {
 
     // entities
     public _entities;
-    public _schema; // colyseus schema
+    public _schema: PlayerSchema; // colyseus schema
 
     // mesh
     public playerMesh: Mesh;
@@ -93,12 +94,14 @@ export class Entity extends TransformNode {
         this._mesh.spawn();
 
         // update from server
-        gameScene.$(this._schema).onChange((test) => {
+        gameScene.$(this._schema).onChange(() => {
             let debug = {
                 x: this._schema.x,
                 y: this._schema.y,
                 z: this._schema.z,
                 rot: this._schema.rot,
+                speed: this._schema.speed,
+                turnSpeed: this._schema.turnSpeed,
                 sequence: this._schema.sequence,
             };
 

@@ -7,6 +7,8 @@ import { Scene } from "@babylonjs/core/scene";
 import { AssetsController } from "./AssetsController";
 import { AssetContainer } from "@babylonjs/core/assetContainer";
 import { LoadingController } from "./LoadingController";
+import { Room } from "colyseus.js";
+import type { GameState } from "../../../server/src/schemas/GameState";
 
 export class GameController {
     // core
@@ -32,7 +34,7 @@ export class GameController {
     public materials = new Map();
 
     // network
-    public joinedRoom;
+    public joinedRoom: Room<GameState>;
 
     // navmesh
     public recast;

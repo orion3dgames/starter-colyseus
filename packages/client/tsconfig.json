@@ -12,6 +12,7 @@
         "allowJs": true,
         "moduleResolution": "node",
         "types": ["node"],
+        "forceConsistentCasingInFileNames": true,
         "baseUrl": ".",
         "paths": {
             "@shared/*": ["../shared/*"]
