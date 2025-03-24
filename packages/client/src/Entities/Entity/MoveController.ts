@@ -35,6 +35,7 @@ export class MoveController {
     }
 
     // Moves the player based on input values for horizontal and vertical movement
+    // Moves the player based on input values for horizontal and vertical movement
     public move(horizontal: number, vertical: number) {
         let speed = this._player.speed;
         let turnSpeed = this._player.turnSpeed;
@@ -53,13 +54,16 @@ export class MoveController {
             if (vertical < 0) this.targetRotation.y += turnSpeed;
         } else {
             // Calculate strafe movement (perpendicular to forward direction)
-            strafeX = Math.cos(this.targetRotation.y) * vertical * speed;
-            strafeZ = -Math.sin(this.targetRotation.y) * vertical * speed;
+            //strafeX = Math.cos(this.targetRotation.y) * vertical * speed;
+            //strafeZ = -Math.sin(this.targetRotation.y) * vertical * speed;
         }
 
         // Update the player's target position based on forward and strafe movement
         this.targetPosition.x += forwardX + strafeX;
         this.targetPosition.z += forwardZ + strafeZ;
+
+        // check if position is allowed
+        //if (!this._player._navmesh.findPath(this._player.position, this.targetPosition)) {}
 
         // make sure the camera returns to default position
         this._player._camera.backToDefaultRotation(this._player);

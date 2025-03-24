@@ -10,6 +10,7 @@ import { getNavMeshPositionsAndIndices, init } from "recast-navigation";
 import { VertexData } from "@babylonjs/core/Meshes/mesh.vertexData";
 import { GroundMesh } from "@babylonjs/core/Meshes/groundMesh";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
+import { NavMeshQuery } from "recast-navigation";
 
 export class NavMeshController {
     // core
@@ -36,6 +37,13 @@ export class NavMeshController {
 
         await this.generateNavMeshDebug();
         console.log("[RECAST] navmesh debug created");
+    }
+
+    async findPath(start: Vector3, end: Vector3) {
+        const navMeshQuery = new NavMeshQuery(this._navmesh);
+        const { success, error, path } = navMeshQuery.computePath(start, end);
+        console.log("[RECAST] navmesh query: ", start, end, success, error, path);
+        return success;
     }
 
     async generateNavMeshDebug() {

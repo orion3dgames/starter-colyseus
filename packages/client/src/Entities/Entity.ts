@@ -15,6 +15,7 @@ import { InterfaceController } from "../Controllers/InterfaceController";
 
 import { Room } from "colyseus.js";
 import { MeshController } from "./Entity/MeshController";
+import { NavMeshController } from "../Controllers/NavMeshController";
 
 export class Entity extends TransformNode {
     public _camera: CameraController;
@@ -23,6 +24,7 @@ export class Entity extends TransformNode {
     public _interface: InterfaceController;
     public _input: InputController;
     public _nameplate: NameplateController;
+    public _navmesh: NavMeshController;
     public _movement: MoveController;
     public _mesh: MeshController;
     public _room: Room;
@@ -63,6 +65,7 @@ export class Entity extends TransformNode {
         this._shadow = gameScene._shadow;
         this._entities = gameScene.entities;
         this._schema = schema;
+        this._navmesh = gameScene._navmesh;
         this.isCurrentPlayer = isCurrentPlayer;
         this.sessionId = name;
 
@@ -101,16 +104,16 @@ export class Entity extends TransformNode {
 
             //console.table(debug);
 
-            // update player data from server data
-            Object.assign(this, this._schema);
+            // // update player data from server data
+            // Object.assign(this, this._schema);
 
-            // set default position
-            this._movement.setPositionAndRotation(this._schema); // set next default position from server entity
+            // // set default position
+            // this._movement.setPositionAndRotation(this._schema); // set next default position from server entity
 
-            // do server reconciliation on client if current player only & not blocked
-            if (this.isCurrentPlayer) {
-                this._movement.reconcileMove(this._schema.sequence); // set default entity position
-            }
+            // // do server reconciliation on client if current player only & not blocked
+            // if (this.isCurrentPlayer) {
+            //     this._movement.reconcileMove(this._schema.sequence); // set default entity position
+            // }
         });
 
         // show entity label
