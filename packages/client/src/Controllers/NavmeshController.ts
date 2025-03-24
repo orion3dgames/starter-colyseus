@@ -11,6 +11,8 @@ import { VertexData } from "@babylonjs/core/Meshes/mesh.vertexData";
 import { GroundMesh } from "@babylonjs/core/Meshes/groundMesh";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { NavMeshQuery } from "recast-navigation";
+import { GameScene } from "src/Scenes/GameScene";
+import { LevelGenerator } from "./LevelGenerator";
 
 export class NavMeshController {
     // core
@@ -19,24 +21,20 @@ export class NavMeshController {
     public config: Config;
 
     //
+    public _level: LevelGenerator;
     public _recast;
     public _navmesh;
     public _debugMesh: Mesh;
 
-    constructor(gamescene) {
+    constructor(gamescene: GameScene) {
         this._scene = gamescene._scene;
         this._game = gamescene._game;
+        this._level = gamescene._level;
     }
 
     async initialize(level) {
         this._recast = await init();
         console.log("[RECAST] recast initialized");
-
-        this._navmesh = await this.generateNavmesh(level);
-        console.log("[RECAST] navmesh created");
-
-        await this.generateNavMeshDebug();
-        console.log("[RECAST] navmesh debug created");
     }
 
     async findPath(start: Vector3, end: Vector3) {
@@ -46,7 +44,36 @@ export class NavMeshController {
         return success;
     }
 
+    async regenerate(navMeshConfig = this.getDefaultConfig()) {
+        await this.generateNavmesh(navMeshConfig);
+        await this.generateNavMeshDebug();
+    }
+
+    async generateNavmesh(navMeshConfig = this.getDefaultConfig()) {
+        // Get the positions of the mesh
+        const [positions, indices] = this.getPositionsAndIndices(this._level.mesh);
+
+        const { success, navMesh } = generateSoloNavMesh(positions, indices, navMeshConfig);
+
+        console.log(this._level.mesh, success, navMesh);
+
+        if (!success) {
+            console.error("Error generating the navmesh", navMesh);
+        }
+
+        this._navmesh = navMesh;
+    }
+
     async generateNavMeshDebug() {
+        if (this._debugMesh) {
+            this._debugMesh.dispose(false, true);
+        }
+
+        if (!this._navmesh) {
+            console.error("Navmesh does not exists", this._navmesh);
+            return false;
+        }
+
         const [positions, indices] = getNavMeshPositionsAndIndices(this._navmesh);
 
         // Create a new mesh
@@ -96,33 +123,9 @@ export class NavMeshController {
 
         // Save for later use
         this._debugMesh = customMesh;
-    }
 
-    async generateNavmesh(meshs: []) {
-        // Get the positions of the mesh
-
-        const [positions, indices] = this.getPositionsAndIndices(meshs);
-
-        const navMeshConfig = {
-            borderSize: 0,
-            cs: 0.2,
-            ch: 0.2,
-            walkableSlopeAngle: 35,
-            walkableHeight: 1,
-            walkableClimb: 1,
-            walkableRadius: 2,
-            maxEdgeLen: 12,
-            maxSimplificationError: 1.3,
-            minRegionArea: 8,
-            mergeRegionArea: 20,
-            maxVertsPerPoly: 6,
-            detailSampleDist: 6,
-            detailSampleMaxError: 1,
-        };
-
-        const { success, navMesh } = generateSoloNavMesh(positions, indices, navMeshConfig);
-
-        return navMesh;
+        // debug
+        console.log("[RECAST] navmesh debug created");
     }
 
     getPositionsAndIndices = (meshes: Mesh[]): [positions: Float32Array, indices: Uint32Array] => {
@@ -179,4 +182,23 @@ export class NavMeshController {
 
         return [Float32Array.from(mergedPositions), Uint32Array.from(mergedIndices)];
     };
+
+    getDefaultConfig() {
+        return {
+            borderSize: 0,
+            cs: 0.2,
+            ch: 0.2,
+            walkableSlopeAngle: 35,
+            walkableHeight: 1,
+            walkableClimb: 1,
+            walkableRadius: 2,
+            maxEdgeLen: 12,
+            maxSimplificationError: 1.3,
+            minRegionArea: 8,
+            mergeRegionArea: 20,
+            maxVertsPerPoly: 6,
+            detailSampleDist: 6,
+            detailSampleMaxError: 1,
+        };
+    }
 }

@@ -22,28 +22,34 @@ export class LevelGenerator {
     }
 
     async initialize() {
-        // generate level
-        const plane = MeshBuilder.CreatePlane("plane", { size: 20 }, this._scene);
-        plane.rotation.x = Math.PI / 2;
-        plane.receiveShadows = true;
+        this.mesh = [this._game._loadedAssets["LEVEL_01"].loadedMeshes[1]];
 
-        // generate obstacles
-        const box = MeshBuilder.CreateBox("box", { size: 2 }, this._scene);
-        box.position = new Vector3(0, 1, 5);
-
-        const level = Mesh.MergeMeshes([plane, box], true, false, null, false, true);
-
-        const texture = this._game._loadedAssets["GRASS_01"] as Texture;
-        texture.uScale = 60;
-        texture.vScale = 60;
-        const material = new StandardMaterial("grass", this._scene);
-        material.specularColor = Color3.Black();
-        material.diffuseTexture = texture;
-
-        level.material = material;
-
-        this.mesh = [level];
+        //this.mesh = [level];
     }
+
+    // async initialize() {
+    //     // generate level
+    //     const plane = MeshBuilder.CreatePlane("plane", { size: 20 }, this._scene);
+    //     plane.rotation.x = Math.PI / 2;
+    //     plane.receiveShadows = true;
+
+    //     // generate obstacles
+    //     const box = MeshBuilder.CreateBox("box", { size: 2 }, this._scene);
+    //     box.position = new Vector3(0, 1, 5);
+
+    //     const level = Mesh.MergeMeshes([plane, box], true, false, null, false, true);
+
+    //     const texture = this._game._loadedAssets["GRASS_01"] as Texture;
+    //     texture.uScale = 60;
+    //     texture.vScale = 60;
+    //     const material = new StandardMaterial("grass", this._scene);
+    //     material.specularColor = Color3.Black();
+    //     material.diffuseTexture = texture;
+
+    //     level.material = material;
+
+    //     this.mesh = [level];
+    // }
 
     // async initialize() {
 

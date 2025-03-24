@@ -8,6 +8,7 @@ import { Button } from "@babylonjs/gui/2D/controls/button";
 import { Control } from "@babylonjs/gui/2D/controls/control";
 import { Entity } from "../Entities/Entity";
 import { ServerMsg } from "../../../shared/types";
+import { NavmeshBox } from "./UI/NavmeshBox";
 
 export class InterfaceController {
     public _scene: Scene;
@@ -23,9 +24,11 @@ export class InterfaceController {
 
     // ui controllers
     public _DebugBox: DebugBox;
+    public _NavmeshBox: NavmeshBox;
 
     // vars
     public ping: number = 0;
+    public currentPlayer: Entity;
 
     constructor(scene: Scene, engine: Engine, gameScene: GameScene) {
         this._scene = scene;
@@ -39,9 +42,6 @@ export class InterfaceController {
         this._mainLayer = AdvancedDynamicTexture.CreateFullscreenUI("UI_MainLayer", true, this._scene);
         this._frontLayer = AdvancedDynamicTexture.CreateFullscreenUI("UI_FrontLayer", true, this._scene);
 
-        // debug button
-        this.createDebug();
-
         // on pong
         this._room.onMessage(ServerMsg.PONG, (data) => {
             let dateNow = Date.now();
@@ -54,8 +54,8 @@ export class InterfaceController {
     }
 
     setCurrentPlayer(entity: Entity) {
+        this.currentPlayer = entity;
         this._DebugBox = new DebugBox(this, entity);
+        this._NavmeshBox = new NavmeshBox(this, entity);
     }
-
-    createDebug() {}
 }

@@ -41,6 +41,7 @@ export class AssetsController {
         // set list of assets
         this.assetDatabase = [
             { key: "PLAYER_01", filename: "skeleton_01.glb", extension: "glb", type: "mesh", instantiate: true },
+            { key: "LEVEL_01", filename: "nav_test.glb", extension: "glb", type: "mesh" },
             { key: "GRASS_01", filename: "grass_01.jpg", extension: "jpg", type: "texture" },
             { key: "TXT_shadow_01", filename: "shadow_01.png", extension: "png", type: "texture" },
         ];
