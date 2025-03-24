@@ -4,6 +4,7 @@ import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
 import { GameController } from "./GameController";
 import { Mesh } from "@babylonjs/core/Meshes/mesh";
+import { Color3 } from "@babylonjs/core/Maths/math.color";
 
 export class LevelGenerator {
     // core
@@ -27,12 +28,15 @@ export class LevelGenerator {
             this._scene
         );
 
+        terrain.receiveShadows = true;
+
         const texture = this._game._loadedAssets["GRASS_01"];
         texture.uScale = 40;
         texture.vScale = 40;
 
         // Apply a material to the terrain
         const terrainMaterial = new StandardMaterial("terrainMat", this._scene);
+        terrainMaterial.specularColor = Color3.Black();
         terrainMaterial.diffuseTexture = texture;
         terrain.material = terrainMaterial;
 

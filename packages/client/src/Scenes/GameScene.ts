@@ -13,7 +13,7 @@ import { ShadowGenerator } from "@babylonjs/core/Lights/Shadows/shadowGenerator"
 import { getStateCallbacks } from "colyseus.js";
 import { CameraController } from "../Entities/Entity/CameraController";
 import { LevelGenerator } from "../Controllers/LevelGenerator";
-import { NavMeshController } from "../Controllers/NavmeshController";
+import { NavMeshController } from "../Controllers/NavMeshController";
 
 export class GameScene {
     public _game: GameController;

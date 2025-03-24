@@ -2,20 +2,25 @@ import { Config } from "../../../shared/Config";
 import { Scene } from "@babylonjs/core/scene";
 import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
 import { GameController } from "./GameController";
-import { Color3 } from "@babylonjs/core/Maths/math.color";
+import { Color3, Color4 } from "@babylonjs/core/Maths/math.color";
 import { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { generateSoloNavMesh } from "recast-navigation/generators";
 import { VertexBuffer } from "@babylonjs/core/Meshes/buffer";
 import { getNavMeshPositionsAndIndices, init } from "recast-navigation";
 import { VertexData } from "@babylonjs/core/Meshes/mesh.vertexData";
 import { GroundMesh } from "@babylonjs/core/Meshes/groundMesh";
+import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 
 export class NavMeshController {
     // core
     public _scene: Scene;
     public _game: GameController;
     public config: Config;
-    public recast;
+
+    //
+    public _recast;
+    public _navmesh;
+    public _debugMesh: Mesh;
 
     constructor(gamescene) {
         this._scene = gamescene._scene;
@@ -23,18 +28,18 @@ export class NavMeshController {
     }
 
     async initialize(level) {
-        this.recast = await init();
+        this._recast = await init();
         console.log("[RECAST] recast initialized");
 
-        let navmesh = await this.generateNavmesh(level);
+        this._navmesh = await this.generateNavmesh(level);
         console.log("[RECAST] navmesh created");
 
-        await this.generateNavMeshDebug(navmesh);
+        await this.generateNavMeshDebug();
         console.log("[RECAST] navmesh debug created");
     }
 
-    async generateNavMeshDebug(navmesh) {
-        const [positions, indices] = getNavMeshPositionsAndIndices(navmesh);
+    async generateNavMeshDebug() {
+        const [positions, indices] = getNavMeshPositionsAndIndices(this._navmesh);
 
         // Create a new mesh
         const customMesh = new Mesh("debugNavMesh", this._scene);
@@ -44,18 +49,45 @@ export class NavMeshController {
         vertexData.positions = positions;
         vertexData.indices = indices;
 
-        // Optionally, compute normals for correct lighting
+        // Compute normals for correct lighting
         vertexData.normals = [];
         VertexData.ComputeNormals(positions, indices, vertexData.normals);
+
+        // 🎨 Generate random colors for each face
+        const colors = new Array((positions.length / 3) * 4).fill(0); // Initialize array
+
+        for (let i = 0; i < indices.length; i += 3) {
+            // Generate a random color for this face
+            const color = new Color4(Math.random(), Math.random(), Math.random(), 1);
+
+            // Assign the color to each vertex of the face
+            for (let j = 0; j < 3; j++) {
+                const vertexIndex = indices[i + j] * 4; // Each Color4 has 4 values (RGBA)
+                colors[vertexIndex] = color.r;
+                colors[vertexIndex + 1] = color.g;
+                colors[vertexIndex + 2] = color.b;
+                colors[vertexIndex + 3] = color.a;
+            }
+        }
+
+        // Apply colors to vertex data
+        vertexData.colors = colors;
 
         // Apply the vertexData to the mesh
         vertexData.applyToMesh(customMesh);
 
-        // Optional: Set a color or material for the mesh
-        const material = new StandardMaterial("customMaterial", this._scene);
-        material.diffuseColor = Color3.Red();
-        material.wireframe = true; // Enable wireframe mode
+        // Create and assign material
+        const material = new StandardMaterial("navMeshDebug", this._scene);
+        material.backFaceCulling = false;
+        material.alpha = 0.5;
+        material.emissiveColor = new Color3(50, 50, 50);
         customMesh.material = material;
+
+        // Move it slightly up to avoid z-fighting
+        customMesh.position = new Vector3(0, 0.01, 0);
+
+        // Save for later use
+        this._debugMesh = customMesh;
     }
 
     async generateNavmesh(level: GroundMesh) {
@@ -70,7 +102,7 @@ export class NavMeshController {
             walkableSlopeAngle: 35,
             walkableHeight: 1,
             walkableClimb: 1,
-            walkableRadius: 1,
+            walkableRadius: 2,
             maxEdgeLen: 12,
             maxSimplificationError: 1.3,
             minRegionArea: 8,
