@@ -1,6 +1,6 @@
 import { Scene } from "@babylonjs/core/scene";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
-import { Color3, Color4 } from "@babylonjs/core/Maths/math.color";
+import { Color4 } from "@babylonjs/core/Maths/math.color";
 
 import { GameController } from "../Controllers/GameController";
 import { SceneName, ServerMsg } from "../../../shared/types";
@@ -10,19 +10,18 @@ import { Entity } from "../Entities/Entity";
 import { InterfaceController } from "../Controllers/InterfaceController";
 import { DirectionalLight } from "@babylonjs/core/Lights/directionalLight";
 import { ShadowGenerator } from "@babylonjs/core/Lights/Shadows/shadowGenerator";
-import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
-import { SkyMaterial } from "@babylonjs/materials/sky/skyMaterial";
 import { getStateCallbacks } from "colyseus.js";
-import { GridMaterial } from "@babylonjs/materials/grid/gridMaterial";
 import { CameraController } from "../Entities/Entity/CameraController";
-import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
-import { Texture } from "@babylonjs/core";
+import { LevelGenerator } from "../Controllers/LevelGenerator";
+import { NavMeshController } from "../Controllers/NavmeshController";
 
 export class GameScene {
     public _game: GameController;
     public _scene: Scene;
     public _engine: Engine;
     public _newState: SceneName;
+    public _level: LevelGenerator;
+    public _navmesh: NavMeshController;
     public _interface;
     public _environment;
     public _shadow: ShadowGenerator;
@@ -52,6 +51,14 @@ export class GameScene {
         await this._game._assetsCtrl.loadLevel();
         this._game.engine.displayLoadingUI();
 
+        // load level
+        this._level = new LevelGenerator(this);
+        await this._level.initialize();
+
+        // load navmesh
+        this._navmesh = new NavMeshController(this);
+        await this._navmesh.initialize(this._level.level);
+
         // set sky color
         this._scene.clearColor = new Color4(0.1, 0.1, 0.1, 1);
 
@@ -70,26 +77,6 @@ export class GameScene {
         // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
         var ambient = new HemisphericLight("ambient1", new Vector3(0, 2, 0), scene);
         ambient.intensity = 1;
-
-        const skyMaterial = new SkyMaterial("skyMaterial", scene);
-        skyMaterial.backFaceCulling = false;
-
-        const skybox = MeshBuilder.CreateBox("skyBox", { size: 1000.0 }, scene);
-        skybox.material = skyMaterial;
-
-        // generate level
-        const plane = MeshBuilder.CreatePlane("plane", { size: 200 }, scene);
-        plane.rotation.x = Math.PI / 2;
-        plane.receiveShadows = true;
-
-        const texture = this._game._loadedAssets["GRASS_01"] as Texture;
-        texture.uScale = 60;
-        texture.vScale = 60;
-        const material = new StandardMaterial("grass", this._scene);
-        material.specularColor = Color3.Black();
-        material.diffuseTexture = texture;
-
-        plane.material = material;
 
         // setup colyseus room
         if (!this._game.joinedRoom) {
@@ -117,11 +104,11 @@ export class GameScene {
 
         // colyseus callbacks
         this.$(this.room.state).players.onAdd((schema, sessionId) => {
-            console.log("[GAME] PLAYER ADDED", schema);
+            console.log("[SCHEMA] PLAYER ADDED", schema);
             this.entities.set(sessionId, new Entity(sessionId, this._scene, this, schema, sessionId === this.sessionId));
         });
         this.$(this.room.state).players.onRemove((schema, sessionId) => {
-            console.log("[GAME] PLAYER LEFT", schema);
+            console.log("[SCHEMA] PLAYER LEFT", schema);
             if (this.entities.get(sessionId)) {
                 this.entities.get(sessionId).delete();
             }

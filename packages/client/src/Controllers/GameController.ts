@@ -34,6 +34,9 @@ export class GameController {
     // network
     public joinedRoom;
 
+    // navmesh
+    public recast;
+
     constructor(app) {
         // core
         this.engine = app.engine;

@@ -22,13 +22,11 @@ class LoadingController implements ILoadingScreen {
     }
 
     public displayLoadingUI() {
-        console.log("displaying loading");
         this.loadingScreenDiv.style.display = "block";
         this.loadingScreenTxt.innerHTML = "Loading Assets...";
     }
 
     public hideLoadingUI() {
-        console.log("hiding loading");
         this.loadingScreenDiv.style.display = "none";
     }
 
