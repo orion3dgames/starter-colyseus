@@ -45,26 +45,27 @@ export class MoveController {
         let forwardX = Math.sin(this.targetRotation.y) * horizontal * speed;
         let forwardZ = Math.cos(this.targetRotation.y) * horizontal * speed;
 
-        // Calculate strafe movement (perpendicular to forward direction)
-        let strafeX = 0;
-        let strafeZ = 0;
-
         // Rotate player left/right only when right mouse is not held
         if (!this._player._input.rightMouseDown) {
             if (vertical > 0) this.targetRotation.y -= turnSpeed;
             if (vertical < 0) this.targetRotation.y += turnSpeed;
-        } else {
-            // Calculate strafe movement (perpendicular to forward direction)
-            //strafeX = Math.cos(this.targetRotation.y) * vertical * speed;
-            //strafeZ = -Math.sin(this.targetRotation.y) * vertical * speed;
         }
 
-        // Update the player's target position based on forward and strafe movement
-        this.targetPosition.x += forwardX + strafeX;
-        this.targetPosition.z += forwardZ + strafeZ;
+        let newPosition = new Vector3(this.targetPosition.x + forwardX, this.targetPosition.y, this.targetPosition.z + forwardZ);
 
         // check if position is allowed
-        //if (!this._player._navmesh.findPath(this._player.position, this.targetPosition)) {}
+        let { isPointOverPoly, point } = this._player._navmesh.checkPoint(newPosition);
+        console.log("CHECK", isPointOverPoly, point);
+        if (!isPointOverPoly) {
+            return false;
+        }
+
+        let distance = this.targetPosition.y - point.y;
+
+        // Update the player's target position based on forward and strafe movement
+        this.targetPosition.x = newPosition.x;
+        this.targetPosition.y -= distance;
+        this.targetPosition.z = newPosition.z;
 
         // make sure the camera returns to default position
         this._player._camera.backToDefaultRotation(this._player);

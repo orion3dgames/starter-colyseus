@@ -10,7 +10,7 @@ import { VertexData } from "@babylonjs/core/Meshes/mesh.vertexData";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { GameScene } from "../Scenes/GameScene";
 import { LevelGenerator } from "./LevelGenerator";
-import { exportNavMesh, getNavMeshPositionsAndIndices, init, NavMesh } from "recast-navigation";
+import { exportNavMesh, getNavMeshPositionsAndIndices, init, NavMesh, NavMeshQuery } from "recast-navigation";
 import { GLTF2Export, IExportOptions } from "@babylonjs/serializers";
 
 export class NavMeshController {
@@ -48,12 +48,25 @@ export class NavMeshController {
     }
 
     async findPath(start: Vector3, end: Vector3) {
-        /*
         const navMeshQuery = new NavMeshQuery(this._navmesh);
         const { success, error, path } = navMeshQuery.computePath(start, end);
-        console.log("[RECAST] navmesh query: ", start, end, success, error, path);
-        return success;
-        */
+        if (path.length > 0) {
+            console.log("[RECAST] navmesh query success: ", start, end, success, path);
+            return true;
+        }
+        console.error("[RECAST] navmesh query failed: ", start, end, error, path);
+        return false;
+    }
+
+    checkPoint(position: Vector3) {
+        const navMeshQuery = new NavMeshQuery(this._navmesh);
+        const { success, status, point, polyRef, isPointOverPoly } = navMeshQuery.findClosestPoint(position);
+        if (isPointOverPoly) {
+            //onsole.log("[RECAST] navmesh check success: ", success, status, point);
+            return { isPointOverPoly, point };
+        }
+        //console.error("[RECAST] navmesh check failed: ", success, status, point);
+        return { isPointOverPoly, point };
     }
 
     async regenerate(navMeshConfig = this.getDefaultConfig()) {
@@ -63,6 +76,9 @@ export class NavMeshController {
     }
 
     async generateNavmesh(navMeshConfig = this.getDefaultConfig()) {
+        //
+        await this.clearNavmesh();
+
         // Get the positions of the mesh
         const [positions, indices] = this.getPositionsAndIndices(this._level.mesh);
 
@@ -208,7 +224,7 @@ export class NavMeshController {
             walkableSlopeAngle: 60,
             walkableHeight: 2,
             walkableClimb: 2,
-            walkableRadius: 0.2,
+            walkableRadius: 1,
             maxEdgeLen: 12,
             maxSimplificationError: 1.3,
             minRegionArea: 8,

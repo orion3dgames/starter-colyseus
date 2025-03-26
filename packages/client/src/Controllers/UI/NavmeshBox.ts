@@ -74,7 +74,7 @@ export class NavmeshBox {
             debugText.textVerticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
             panel.addControl(debugText);
 
-            let maximum = settings[s] > 0 ? settings[s] * 2 : 1;
+            let maximum = settings[s] > 0 ? settings[s] * 4 : 1;
 
             var slider = new Slider(s);
             slider.minimum = 0;

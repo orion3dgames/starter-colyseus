@@ -129,13 +129,13 @@ export class Entity extends TransformNode {
         // update only for current player
         if (this.isCurrentPlayer) {
             this._camera.update();
-            this._input.update();
         }
     }
 
     public updateServerRate() {
         // update only for current player
         if (this.isCurrentPlayer) {
+            this._input.update();
             this._interface.update();
         }
     }
