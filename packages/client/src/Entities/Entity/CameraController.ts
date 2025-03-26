@@ -42,7 +42,7 @@ export class CameraController {
             if (this.camera.rotationOffset === this.offsetRotationDefault) {
                 this.goBackToDefault = false;
             }
-            console.log("returning back to default", this.camera.rotationOffset);
+            //console.log("returning back to default", this.camera.rotationOffset);
         }
     }
 

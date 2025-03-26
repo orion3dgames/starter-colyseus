@@ -59,7 +59,6 @@ export class InputController {
                     if (this.isCameraRotating) {
                         let offset = roundTo(pointerInfo.event.movementX * 0.3, 0);
                         this._camera.offsetRotationTarget = offset; // Rotate camera horizontally
-                        console.log(this._camera.offsetRotationTarget);
                     }
                     break;
             }
