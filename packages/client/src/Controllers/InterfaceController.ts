@@ -9,6 +9,7 @@ import { Control } from "@babylonjs/gui/2D/controls/control";
 import { Entity } from "../Entities/Entity";
 import { ServerMsg } from "../../../shared/types";
 import { NavmeshBox } from "./UI/NavmeshBox";
+import { Screenshot } from "./UI/Screenshot";
 
 export class InterfaceController {
     public _scene: Scene;
@@ -25,6 +26,7 @@ export class InterfaceController {
     // ui controllers
     public _DebugBox: DebugBox;
     public _NavmeshBox: NavmeshBox;
+    public _Screenshot: Screenshot;
 
     // vars
     public ping: number = 0;
@@ -56,6 +58,7 @@ export class InterfaceController {
     setCurrentPlayer(entity: Entity) {
         this.currentPlayer = entity;
         this._DebugBox = new DebugBox(this, entity);
-        this._NavmeshBox = new NavmeshBox(this, entity);
+        this._Screenshot = new Screenshot(this, entity);
+        //this._NavmeshBox = new NavmeshBox(this, entity);
     }
 }
