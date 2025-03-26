@@ -32,6 +32,11 @@ export class MeshController {
         box.material = material;
         box.parent = this._entity;
 
+        // add arms
+        const arms = MeshBuilder.CreateBox("PlayerArm_" + this._entity.sessionId, { width: 2, height: 0.2, depth: 0.2 }, this._scene);
+        arms.position = new Vector3(0, -0.1, 0);
+        arms.parent = box;
+
         // add player shadow
         this._entity._shadow.addShadowCaster(box);
 

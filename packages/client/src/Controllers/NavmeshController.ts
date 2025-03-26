@@ -4,9 +4,9 @@ import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
 import { GameController } from "./GameController";
 import { Color3, Color4 } from "@babylonjs/core/Maths/math.color";
 import { Mesh } from "@babylonjs/core/Meshes/mesh";
-import { generateSoloNavMesh } from "recast-navigation/generators";
+import { generateSoloNavMesh, GenerateSoloNavMeshResult } from "recast-navigation/generators";
 import { VertexBuffer } from "@babylonjs/core/Meshes/buffer";
-import { getNavMeshPositionsAndIndices, init } from "recast-navigation";
+import { getNavMeshPositionsAndIndices, init, NavMesh } from "recast-navigation";
 import { VertexData } from "@babylonjs/core/Meshes/mesh.vertexData";
 import { GroundMesh } from "@babylonjs/core/Meshes/groundMesh";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
@@ -23,7 +23,7 @@ export class NavMeshController {
     //
     public _level: LevelGenerator;
     public _recast;
-    public _navmesh;
+    public _navmesh: NavMesh;
     public _debugMesh: Mesh;
 
     constructor(gamescene: GameScene) {
@@ -32,19 +32,22 @@ export class NavMeshController {
         this._level = gamescene._level;
     }
 
-    async initialize(level) {
+    async initialize() {
         this._recast = await init();
         console.log("[RECAST] recast initialized");
     }
 
     async findPath(start: Vector3, end: Vector3) {
+        /*
         const navMeshQuery = new NavMeshQuery(this._navmesh);
         const { success, error, path } = navMeshQuery.computePath(start, end);
         console.log("[RECAST] navmesh query: ", start, end, success, error, path);
         return success;
+        */
     }
 
     async regenerate(navMeshConfig = this.getDefaultConfig()) {
+        await this.clearNavmesh();
         await this.generateNavmesh(navMeshConfig);
         await this.generateNavMeshDebug();
     }
@@ -64,11 +67,14 @@ export class NavMeshController {
         this._navmesh = navMesh;
     }
 
-    async generateNavMeshDebug() {
+    async clearNavmesh() {
+        this._navmesh = null;
         if (this._debugMesh) {
             this._debugMesh.dispose(false, true);
         }
+    }
 
+    async generateNavMeshDebug() {
         if (!this._navmesh) {
             console.error("Navmesh does not exists", this._navmesh);
             return false;
@@ -119,7 +125,7 @@ export class NavMeshController {
         customMesh.material = material;
 
         // Move it slightly up to avoid z-fighting
-        customMesh.position = new Vector3(0, 0.01, 0);
+        //customMesh.position = new Vector3(0, 1, 0);
 
         // Save for later use
         this._debugMesh = customMesh;
@@ -186,12 +192,13 @@ export class NavMeshController {
     getDefaultConfig() {
         return {
             borderSize: 0,
-            cs: 0.2,
-            ch: 0.2,
-            walkableSlopeAngle: 35,
-            walkableHeight: 1,
-            walkableClimb: 1,
-            walkableRadius: 2,
+            tileSize: 0,
+            cs: 0.2, // cell size
+            ch: 0.2, // cell height
+            walkableSlopeAngle: 60,
+            walkableHeight: 2,
+            walkableClimb: 2,
+            walkableRadius: 0.2,
             maxEdgeLen: 12,
             maxSimplificationError: 1.3,
             minRegionArea: 8,

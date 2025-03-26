@@ -98,13 +98,15 @@ export class NavmeshBox {
 
         resetButton.onPointerDownObservable.add(() => {
             newSettings = this._ui.currentPlayer._navmesh.getDefaultConfig();
-            for (let s in settings) {
+            for (let s in newSettings) {
                 let control = this._ui._mainLayer.getControlByName("debugText" + s) as TextBlock;
-                control.text = s + ": " + settings[s];
+                control.text = s + ": " + newSettings[s];
 
                 let slider = this._ui._mainLayer.getControlByName(s) as Slider;
-                slider.value = settings[s];
+                slider.value = newSettings[s];
             }
+            console.log("[RECAST] reset settings ", newSettings);
+            this._ui.currentPlayer._navmesh.clearNavmesh();
         });
     }
 
