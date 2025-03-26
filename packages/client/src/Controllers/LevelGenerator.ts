@@ -35,6 +35,9 @@ export class LevelGenerator {
 
         mesh.receiveShadows = true;
 
+        // add to physics
+        this._game._physics.addMesh(mesh);
+
         this.mesh = [mesh];
     }
 }

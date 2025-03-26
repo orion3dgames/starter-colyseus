@@ -46,10 +46,9 @@ export class GameScene {
         // set scene
         this._scene = scene;
 
-        // initialize assets controller & load level
-        this._game.initializeAssetController();
-        await this._game._assetsCtrl.loadLevel();
-        this._game.engine.displayLoadingUI();
+        // initialize controllers
+        await this._game.initalizePhysics();
+        await this._game.initializeAssets();
 
         // load level
         this._level = new LevelGenerator(this);
@@ -125,6 +124,9 @@ export class GameScene {
         this._scene.registerBeforeRender(() => {
             let delta = this._engine.getFps();
             const currentTime = Date.now();
+
+            // update physics state
+            this._game._physics.update();
 
             // game update loop
             this.entities.forEach((entity) => {

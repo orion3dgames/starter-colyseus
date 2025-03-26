@@ -35,7 +35,8 @@
         "babylonjs-gltf2interface": "7.51.3",
         "colyseus.js": "^0.16.11",
         "recast-navigation": "^0.39.0",
-        "unique-names-generator": "^4.7.1"
+        "unique-names-generator": "^4.7.1",
+        "@dimforge/rapier3d-compat-simd": "^0.14.0"
     },
     "browserslist": {
         "production": [

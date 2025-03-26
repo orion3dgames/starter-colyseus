@@ -102,6 +102,8 @@ export class Entity extends TransformNode {
                 sequence: this._schema.sequence,
             };
 
+            // MULTIPLAYER DISABLED FOR THE MOMENT.
+
             //console.table(debug);
 
             // // update player data from server data

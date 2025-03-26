@@ -52,6 +52,8 @@ class App {
             antialias: true,
         });
 
+        console.log("SOMETHING ELSE");
+
         if (Engine.audioEngine) {
             Engine.audioEngine.useCustomUnlockedButton = true;
         }

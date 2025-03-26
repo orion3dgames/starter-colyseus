@@ -7,6 +7,7 @@ import { Scene } from "@babylonjs/core/scene";
 import { AssetsController } from "./AssetsController";
 import { AssetContainer } from "@babylonjs/core/assetContainer";
 import { LoadingController } from "./LoadingController";
+import { PhysicsController } from "./PhysicsController";
 
 export class GameController {
     // core
@@ -30,6 +31,9 @@ export class GameController {
     public _loadedAssets: AssetContainer[] = [];
     public instances = new Map();
     public materials = new Map();
+
+    // physics
+    public _physics: PhysicsController;
 
     // network
     public joinedRoom;
@@ -55,38 +59,26 @@ export class GameController {
 
         // create colyseus client
         this.network = new NetworkController(app.config.port);
-
-        //
-        this.fixForAudio();
     }
 
-    /**
-     * Allow audio to be played
-     */
-    fixForAudio(): void {
-        // fix
-        window.addEventListener(
-            "click",
-            () => {
-                Engine.audioEngine.unlock();
-            },
-            { once: true }
-        );
+    /////////////////////////////////////////
+    //////////// PHYSICS /////////////////
+    /////////////////////////////////////////
+
+    async initalizePhysics() {
+        this._physics = new PhysicsController();
+        await this._physics.init();
+        console.log("[PHYSICS] physics initialized");
     }
 
     /////////////////////////////////////////
     //////////// ASSETS DATA /////////////////
     /////////////////////////////////////////
 
-    async fetchAsset(key) {
-        if (this._loadedAssets[key]) {
-            return this._loadedAssets[key];
-        }
-    }
-
-    async initializeAssetController(shadow = null) {
+    async initializeAssets(shadow = null) {
         this._loadedAssets = [];
         this._assetsCtrl = new AssetsController(this, shadow);
+        await this._assetsCtrl.loadLevel();
     }
 
     /////////////////////////////////////////
