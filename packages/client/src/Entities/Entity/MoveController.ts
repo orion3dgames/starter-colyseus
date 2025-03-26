@@ -2,11 +2,12 @@ import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { ServerMsg, PlayerInputs } from "../../../../shared/types";
 import { Entity } from "../Entity";
 import { Scene } from "@babylonjs/core/scene";
+import { GameController } from "../../Controllers/GameController";
 
 export class MoveController {
     private _player: Entity;
     private _room;
-    private _game;
+    private _game: GameController;
     private _scene: Scene;
 
     private targetPosition: Vector3;

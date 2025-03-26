@@ -66,7 +66,7 @@ export class GameController {
     /////////////////////////////////////////
 
     async initalizePhysics() {
-        this._physics = new PhysicsController();
+        this._physics = new PhysicsController(this.scene);
         await this._physics.init();
         console.log("[PHYSICS] physics initialized");
     }

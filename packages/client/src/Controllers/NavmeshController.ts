@@ -4,15 +4,14 @@ import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
 import { GameController } from "./GameController";
 import { Color3, Color4 } from "@babylonjs/core/Maths/math.color";
 import { Mesh } from "@babylonjs/core/Meshes/mesh";
-import { generateSoloNavMesh, GenerateSoloNavMeshResult } from "recast-navigation/generators";
+import { generateSoloNavMesh } from "recast-navigation/generators";
 import { VertexBuffer } from "@babylonjs/core/Meshes/buffer";
-import { getNavMeshPositionsAndIndices, init, NavMesh } from "recast-navigation";
 import { VertexData } from "@babylonjs/core/Meshes/mesh.vertexData";
-import { GroundMesh } from "@babylonjs/core/Meshes/groundMesh";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
-import { NavMeshQuery } from "recast-navigation";
-import { GameScene } from "src/Scenes/GameScene";
+import { GameScene } from "../Scenes/GameScene";
 import { LevelGenerator } from "./LevelGenerator";
+import { exportNavMesh, getNavMeshPositionsAndIndices, init, NavMesh } from "recast-navigation";
+import { GLTF2Export, IExportOptions } from "@babylonjs/serializers";
 
 export class NavMeshController {
     // core
@@ -35,6 +34,17 @@ export class NavMeshController {
     async initialize() {
         this._recast = await init();
         console.log("[RECAST] recast initialized");
+    }
+
+    async exportToGLTF() {
+        const options: IExportOptions = {
+            shouldExportNode: (node): boolean => {
+                return node.name === "debugNavMesh";
+            },
+        };
+        GLTF2Export.GLBAsync(this._scene, "fileName", options).then((glb) => {
+            glb.downloadFiles();
+        });
     }
 
     async findPath(start: Vector3, end: Vector3) {

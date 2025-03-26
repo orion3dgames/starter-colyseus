@@ -1,12 +1,8 @@
 import { Config } from "../../../shared/Config";
 import { Scene } from "@babylonjs/core/scene";
-import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
-import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
 import { GameController } from "./GameController";
 import { Mesh } from "@babylonjs/core/Meshes/mesh";
-import { Color3 } from "@babylonjs/core/Maths/math.color";
-import { Vector3 } from "@babylonjs/core/Maths/math.vector";
-import { Texture } from "@babylonjs/core/Materials/Textures/texture";
+import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 
 export class LevelGenerator {
     // core
@@ -32,11 +28,7 @@ export class LevelGenerator {
 
     async initialize() {
         const mesh = this.mergeMesh(this._game._loadedAssets["LEVEL_01"].loadedMeshes[0]);
-
         mesh.receiveShadows = true;
-
-        // add to physics
-        this._game._physics.addMesh(mesh);
 
         this.mesh = [mesh];
     }

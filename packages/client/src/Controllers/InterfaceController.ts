@@ -59,6 +59,6 @@ export class InterfaceController {
         this.currentPlayer = entity;
         this._DebugBox = new DebugBox(this, entity);
         this._Screenshot = new Screenshot(this, entity);
-        //this._NavmeshBox = new NavmeshBox(this, entity);
+        this._NavmeshBox = new NavmeshBox(this, entity);
     }
 }

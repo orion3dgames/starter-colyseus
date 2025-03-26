@@ -8,6 +8,7 @@ import { Control } from "@babylonjs/gui/2D/controls/control";
 import { Slider } from "@babylonjs/gui/2D/controls/sliders/slider";
 import { TextBlock } from "@babylonjs/gui/2D/controls/textBlock";
 import { Button } from "@babylonjs/gui/2D/controls/button";
+import { exportNavMesh } from "@recast-navigation/core";
 
 export class NavmeshBox {
     private _engine: Engine;
@@ -33,12 +34,31 @@ export class NavmeshBox {
         var panel = new StackPanel("navmeshcontrols");
         panel.width = "220px";
         panel.left = "15px;";
-        panel.top = "15px;";
+        panel.top = "50px;";
+        panel.background = "#222";
+        panel.isVisible = false;
         panel.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
         panel.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
         panel.isPointerBlocker = true;
         this._ui._mainLayer.addControl(panel);
 
+        //////////////////////////////
+        const showButton = Button.CreateSimpleButton("simpleButton", "TOGGLE NAVMESH");
+        showButton.width = "200px;";
+        showButton.height = "30px";
+        showButton.top = "15px;";
+        showButton.left = "15px;";
+        showButton.color = "white";
+        showButton.background = "#000";
+        showButton.thickness = 1;
+        showButton.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
+        showButton.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
+        this._ui._mainLayer.addControl(showButton);
+        showButton.onPointerDownObservable.add(() => {
+            panel.isVisible = !panel.isVisible;
+        });
+
+        ///
         const settings = this._ui.currentPlayer._navmesh.getDefaultConfig();
 
         let newSettings = { ...settings };
@@ -107,6 +127,21 @@ export class NavmeshBox {
             }
             console.log("[RECAST] reset settings ", newSettings);
             this._ui.currentPlayer._navmesh.clearNavmesh();
+        });
+
+        //////////////////////////////
+        const exportButton = Button.CreateSimpleButton("simpleButton", "EXPORT");
+        exportButton.width = "200px;";
+        exportButton.height = "30px";
+        exportButton.color = "white";
+        exportButton.background = "#000";
+        exportButton.thickness = 1;
+        exportButton.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
+        exportButton.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
+        panel.addControl(exportButton);
+
+        exportButton.onPointerDownObservable.add(() => {
+            this._ui.currentPlayer._navmesh.exportToGLTF();
         });
     }
 

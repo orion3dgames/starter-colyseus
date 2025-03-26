@@ -47,7 +47,7 @@ export class GameScene {
         this._scene = scene;
 
         // initialize controllers
-        await this._game.initalizePhysics();
+        //await this._game.initalizePhysics();
         await this._game.initializeAssets();
 
         // load level
@@ -55,8 +55,8 @@ export class GameScene {
         await this._level.initialize();
 
         // load navmesh
-        //this._navmesh = new NavMeshController(this);
-        //await this._navmesh.initialize();
+        this._navmesh = new NavMeshController(this);
+        await this._navmesh.initialize();
 
         // set sky color
         this._scene.clearColor = new Color4(0.1, 0.1, 0.1, 1);
@@ -124,9 +124,6 @@ export class GameScene {
         this._scene.registerBeforeRender(() => {
             let delta = this._engine.getFps();
             const currentTime = Date.now();
-
-            // update physics state
-            this._game._physics.update();
 
             // game update loop
             this.entities.forEach((entity) => {

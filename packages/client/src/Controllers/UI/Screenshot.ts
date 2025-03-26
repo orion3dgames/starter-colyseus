@@ -30,7 +30,7 @@ export class Screenshot {
         simpleButton.background = "#000";
         simpleButton.thickness = 1;
         simpleButton.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
-        simpleButton.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
+        simpleButton.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
         this._ui._mainLayer.addControl(simpleButton);
 
         simpleButton.onPointerDownObservable.add(() => {
