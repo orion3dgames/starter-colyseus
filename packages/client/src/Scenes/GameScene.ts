@@ -75,8 +75,9 @@ export class GameScene {
         // load navmesh
         this._navmesh = new NavMeshController(this);
         await this._navmesh.initialize();
-        await this._navmesh.regenerate();
-        await this._navmesh.regenerate();
+        await this._navmesh.import();
+        //await this._navmesh.regenerate();
+        //await this._navmesh.regenerate();
 
         // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
         var ambient = new HemisphericLight("ambient1", new Vector3(0, 2, 0), scene);

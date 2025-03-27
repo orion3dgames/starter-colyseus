@@ -43,6 +43,7 @@ export class AssetsController {
         this.assetDatabase = [
             { key: "PLAYER_01", filename: "./characters/skeleton_01.glb", extension: "glb", type: "mesh", instantiate: true },
             { key: "LEVEL_01", filename: "./level/level.glb", extension: "glb", type: "mesh" },
+            { key: "LEVEL_01_NAVMESH", filename: "./models/level/level.bin", extension: "bin", type: "bin" },
             { key: "GRASS_01", filename: "grass_01.jpg", extension: "jpg", type: "texture" },
             { key: "TXT_shadow_01", filename: "shadow_01.png", extension: "png", type: "texture" },
         ];
@@ -74,7 +75,8 @@ export class AssetsController {
 
                 case "mp3":
                 case "wav":
-                    assetTask = this._assetsManager.addBinaryFileTask(obj.key, "./sounds/" + obj.filename);
+                case "bin":
+                    assetTask = this._assetsManager.addBinaryFileTask(obj.key, "./" + obj.filename);
                     break;
 
                 case "babylon":
@@ -90,7 +92,7 @@ export class AssetsController {
 
                 case "json":
                 case "txt":
-                    assetTask = this._assetsManager.addTextFileTask(obj.key, "./data/" + obj.filename);
+                    assetTask = this._assetsManager.addTextFileTask(obj.key, "./" + obj.filename);
                     break;
 
                 default:

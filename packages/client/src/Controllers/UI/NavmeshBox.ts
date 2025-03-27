@@ -130,6 +130,21 @@ export class NavmeshBox {
         exportButton.onPointerDownObservable.add(() => {
             this._ui.currentPlayer._navmesh.export();
         });
+
+        //////////////////////////////
+        const importButton = Button.CreateSimpleButton("simpleButton", "IMPORT");
+        importButton.width = "200px;";
+        importButton.height = "30px";
+        importButton.color = "white";
+        importButton.background = "#000";
+        importButton.thickness = 1;
+        importButton.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
+        importButton.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
+        panel.addControl(importButton);
+
+        importButton.onPointerDownObservable.add(() => {
+            this._ui.currentPlayer._navmesh.import();
+        });
     }
 
     // debug panel refresh

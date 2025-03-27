@@ -29,6 +29,7 @@ export class LevelGenerator {
     }
 
     async initialize() {
+        // add mesh with shadows
         const mesh = this.mergeMesh(this._game._loadedAssets["LEVEL_01"].loadedMeshes[0]);
         mesh.receiveShadows = true;
         this._shadow.addShadowCaster(mesh);

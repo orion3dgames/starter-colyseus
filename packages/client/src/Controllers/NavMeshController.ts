@@ -10,7 +10,7 @@ import { VertexData } from "@babylonjs/core/Meshes/mesh.vertexData";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { GameScene } from "../Scenes/GameScene";
 import { LevelGenerator } from "./LevelGenerator";
-import { Crowd, CrowdAgent, exportNavMesh, getNavMeshPositionsAndIndices, init, NavMesh, NavMeshQuery } from "recast-navigation";
+import { Crowd, CrowdAgent, exportNavMesh, getNavMeshPositionsAndIndices, importNavMesh, init, NavMesh, NavMeshQuery } from "recast-navigation";
 import { GLTF2Export, IExportOptions } from "@babylonjs/serializers";
 import { Entity } from "../Entities/Entity";
 import Debugger from "../Utils/Debugger";
@@ -47,30 +47,52 @@ export class NavMeshController {
     }
 
     async export() {
-        const options: IExportOptions = {
-            shouldExportNode: (node): boolean => {
-                return node.name === "debugNavMesh";
-            },
-        };
-        GLTF2Export.GLBAsync(this._scene, "fileName", options).then((glb) => {
-            glb.downloadFiles();
-            Debugger.log("navmesh exported successfully", "RECAST");
-        });
+        /* export */
+        const navMeshExport: Uint8Array = exportNavMesh(this._navmesh);
+
+        // Create element with <a> tag
+        const link = document.createElement("a");
+
+        // Create a blog object with the file content which you want to add to the file
+        const file = new Blob([navMeshExport as any], { type: "application/octet-stream" });
+
+        // Add file content in the object URL
+        link.href = URL.createObjectURL(file);
+
+        // Add file name
+        link.download = "level.bin";
+
+        // Add click event to <a> tag to save file.
+        link.click();
+
+        URL.revokeObjectURL(link.href);
+
+        // update assets
+        this._game._loadedAssets["LEVEL_01_NAVMESH"] = file.arrayBuffer;
     }
 
-    async import() {}
+    async import() {
+        await this.clearNavmesh();
+        const navMeshExport = this._game._loadedAssets["LEVEL_01_NAVMESH"];
+        const arr = new Uint8Array(navMeshExport);
+        const { navMesh } = importNavMesh(arr);
+        this._navmesh = navMesh;
+        this._query = new NavMeshQuery(this._navmesh);
+        await this.generateNavMeshDebug();
+        Debugger.log("RECAST", "imported navmesh");
+    }
 
     async regenerate(navMeshConfig = this.getDefaultConfig()) {
-        await this.generateNavmesh(navMeshConfig);
+        await this.generateNavmesh(navMeshConfig, this._level.mesh);
         await this.generateNavMeshDebug();
     }
 
-    async generateNavmesh(navMeshConfig = this.getDefaultConfig()) {
-        //
+    async generateNavmesh(navMeshConfig = this.getDefaultConfig(), mesh = []) {
+        // clear navmesh
         await this.clearNavmesh();
 
         // Get the positions of the mesh
-        const [positions, indices] = this.getPositionsAndIndices(this._level.mesh);
+        const [positions, indices] = this.getPositionsAndIndices(mesh);
 
         const { success, navMesh } = generateSoloNavMesh(positions, indices, navMeshConfig);
 
@@ -100,6 +122,11 @@ export class NavMeshController {
         }
 
         const [positions, indices] = getNavMeshPositionsAndIndices(this._navmesh);
+
+        if (positions.length === 0 || indices.length === 0) {
+            Debugger.warn("RECAST", "navmesh position and indices are empty");
+            return false;
+        }
 
         // Create a new mesh
         const customMesh = new Mesh("debugNavMesh", this._scene);
