@@ -171,7 +171,7 @@ export class AssetsController {
     prepareDynamicMeshes() {
         // add cheap shadow
         var material = this._game.scene.getMaterialByName("entity_shadow");
-        let selectedMesh = MeshBuilder.CreatePlane("raw_entity_shadow", { width: 1.5, height: 1.5 }, this._game.scene);
+        let selectedMesh = MeshBuilder.CreatePlane("raw_entity_shadow", { width: 1, height: 1 }, this._game.scene);
         selectedMesh.material = material;
         selectedMesh.position = new Vector3(0, -10, 0);
         selectedMesh.rotation = new Vector3(Math.PI / 2, 0, 0);

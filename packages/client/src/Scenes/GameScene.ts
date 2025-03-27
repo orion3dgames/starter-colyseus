@@ -46,6 +46,23 @@ export class GameScene {
         // set scene
         this._scene = scene;
 
+        // set sky color
+        this._scene.clearColor = new Color4(0.1, 0.1, 0.1, 1);
+
+        // This creates directional light with shdaows
+        var light = new DirectionalLight("dir01", new Vector3(-0.25, -1, -0.25), scene);
+        light.position = new Vector3(20, 40, 20);
+        light.shadowEnabled = true;
+        light.intensity = 1;
+        light.autoCalcShadowZBounds = true;
+
+        // Shadows
+        var shadowGenerator = new ShadowGenerator(1024, light);
+        shadowGenerator.enableSoftTransparentShadow = true;
+        shadowGenerator.transparencyShadow = true;
+        shadowGenerator.filter = ShadowGenerator.FILTER_BLURCLOSEEXPONENTIALSHADOWMAP;
+        this._shadow = shadowGenerator;
+
         // initialize controllers
         //await this._game.initalizePhysics();
         await this._game.initializeAssets();
@@ -59,21 +76,6 @@ export class GameScene {
         await this._navmesh.initialize();
         await this._navmesh.regenerate();
         await this._navmesh.regenerate();
-
-        // set sky color
-        this._scene.clearColor = new Color4(0.1, 0.1, 0.1, 1);
-
-        // This creates directional light with shdaows
-        var light = new DirectionalLight("dir01", new Vector3(-0.25, -1, -0.25), scene);
-        light.position = new Vector3(20, 40, 20);
-        light.shadowEnabled = true;
-
-        // Shadows
-        var shadowGenerator = new ShadowGenerator(1024, light);
-        shadowGenerator.filter = ShadowGenerator.FILTER_PCF;
-        shadowGenerator.filteringQuality = ShadowGenerator.QUALITY_HIGH;
-        shadowGenerator.darkness = 0;
-        this._shadow = shadowGenerator;
 
         // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
         var ambient = new HemisphericLight("ambient1", new Vector3(0, 2, 0), scene);
