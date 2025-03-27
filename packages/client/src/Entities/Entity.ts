@@ -87,7 +87,7 @@ export class Entity extends TransformNode {
         // if current player
         if (isCurrentPlayer) {
             this._camera = new CameraController(scene);
-            this._camera.createFollowCamera(this._scene, this);
+            //ddddddddddddddddthis._camera.createFollowCamera(this._scene, this);
             this._input = new InputController(this);
             this._interface.setCurrentPlayer(this);
         }
@@ -126,12 +126,10 @@ export class Entity extends TransformNode {
     }
 
     public update(delta: number) {
-        // update entity movement
         this._movement.update();
-
         // update only for current player
         if (this.isCurrentPlayer) {
-            this._camera.update();
+            this._camera.update(this);
         }
     }
 
@@ -139,6 +137,8 @@ export class Entity extends TransformNode {
         // update only for current player
         if (this.isCurrentPlayer) {
             this._input.update();
+            // update entity movement
+
             this._interface.update();
         }
     }

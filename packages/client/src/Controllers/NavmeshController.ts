@@ -26,6 +26,7 @@ export class NavMeshController {
     public _level: LevelGenerator;
     public _recast;
     public _navmesh: NavMesh;
+    public _query: NavMeshQuery;
     public _debugMesh: Mesh;
     public _crowd: Crowd;
     public _agents: Map<string, CrowdAgent> = new Map();
@@ -97,10 +98,13 @@ export class NavMeshController {
 
         this._navmesh = navMesh;
 
-        await this.createCrowd();
+        this._query = new NavMeshQuery(this._navmesh);
+
+        //await this.createCrowd();
     }
 
     update() {
+        /*
         const dt = 1 / 60;
         const maxSubSteps = 10;
         this._crowd.update(dt, maxSubSteps);
@@ -109,7 +113,7 @@ export class NavMeshController {
             entity._movement.targetPosition.x = entity._agent.interpolatedPosition.x;
             entity._movement.targetPosition.y = entity._agent.interpolatedPosition.y;
             entity._movement.targetPosition.z = entity._agent.interpolatedPosition.z;
-        });
+        });*/
     }
 
     impulse(sessionId, targetVelocity) {

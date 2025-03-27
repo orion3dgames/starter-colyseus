@@ -38,6 +38,32 @@ export class MoveController {
     // Moves the player based on input values for horizontal and vertical movement
     // Moves the player based on input values for horizontal and vertical movement
     public move(horizontal: number, vertical: number) {
+        let playerPosition = this._player.position.clone();
+
+        const movementVector = new Vector3(horizontal, 0, vertical);
+
+        const movementTarget = playerPosition.add(movementVector);
+
+        const { nearestRef: polyRef } = this._player._navmesh._query.findNearestPoly(this._player.position);
+
+        const { resultPosition, visited } = this._player._navmesh._query.moveAlongSurface(polyRef, this._player.position, movementTarget);
+        const moveAlongSurfaceFinalRef = visited[visited.length - 1];
+
+        const { success: heightSuccess, height } = this._player._navmesh._query.getPolyHeight(moveAlongSurfaceFinalRef, resultPosition);
+
+        // Update the player's target position based on forward and strafe movement
+        this.targetPosition.x = resultPosition.x;
+        this.targetPosition.z = resultPosition.z;
+
+        if (heightSuccess) {
+            this.targetPosition.y = height;
+        }
+
+        const rotation = Math.atan2(movementVector.x, movementVector.z) - Math.PI;
+        //this.targetRotation.y = rotation;
+        this._player._mesh.entityMesh.rotation.y = rotation - 90;
+
+        /*
         let speed = 1;
         let turnSpeed = this._player.turnSpeed;
 
@@ -45,14 +71,6 @@ export class MoveController {
         let forwardX = Math.sin(this.targetRotation.y) * horizontal * speed;
         let forwardZ = Math.cos(this.targetRotation.y) * horizontal * speed;
 
-        /* tell the agent to move in a direction */
-        this._player._navmesh.impulse(this._player.sessionId, {
-            x: horizontal * speed,
-            y: 0,
-            z: vertical * speed,
-        });
-
-        /*
         // Rotate player left/right only when right mouse is not held
         if (!this._player._input.rightMouseDown) {
             if (vertical > 0) this.targetRotation.y -= turnSpeed;
@@ -74,14 +92,14 @@ export class MoveController {
         this.targetPosition.x = newPosition.x;
         this.targetPosition.y -= distance;
         this.targetPosition.z = newPosition.z;
-        */
 
         // make sure the camera returns to default position
         this._player._camera.backToDefaultRotation(this._player);
+        */
     }
 
     // Smoothly interpolate the player's position and rotation towards the target
-    public update(tween: number = 0.2) {
+    public update(tween: number = 0.1) {
         Vector3.LerpToRef(this._player.position, this.targetPosition, tween, this._player.position);
         Vector3.LerpToRef(this._player.rotation, this.targetRotation, tween, this._player.rotation);
     }

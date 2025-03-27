@@ -141,16 +141,8 @@ export class InputController {
 
         if (this.moveKeys.forward) horizontal = 1;
         if (this.moveKeys.backward) horizontal = -1;
-
-        if (this.rightMouseDown) {
-            // Strafe when right mouse button is held
-            if (this.moveKeys.left) vertical = -1;
-            if (this.moveKeys.right) vertical = 1;
-        } else {
-            // Rotate when right mouse button is not held
-            if (this.moveKeys.left) vertical = 1;
-            if (this.moveKeys.right) vertical = -1;
-        }
+        if (this.moveKeys.left) vertical = 1;
+        if (this.moveKeys.right) vertical = -1;
 
         this._movement.processMove(horizontal, vertical);
     }
