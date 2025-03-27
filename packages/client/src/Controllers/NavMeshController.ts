@@ -276,14 +276,8 @@ export class NavMeshController {
             walkableSlopeAngle: 60,
             walkableHeight: 2,
             walkableClimb: 2,
-            walkableRadius: 1,
-            maxEdgeLen: 12,
-            maxSimplificationError: 1.3,
-            minRegionArea: 8,
-            mergeRegionArea: 20,
-            maxVertsPerPoly: 6,
-            detailSampleDist: 6,
-            detailSampleMaxError: 1,
+            walkableRadius: 2,
+            minRegionArea: 12,
         };
     }
 }

@@ -40,62 +40,32 @@ export class MoveController {
     public move(horizontal: number, vertical: number) {
         let playerPosition = this._player.position.clone();
 
+        // Normalize the movement vector to ensure consistent movement speed regardless of direction
         const movementVector = new Vector3(horizontal, 0, vertical);
-
         const movementTarget = playerPosition.add(movementVector);
 
+        //
         const { nearestRef: polyRef } = this._player._navmesh._query.findNearestPoly(this._player.position);
 
+        // Move along the surface of the navmesh
         const { resultPosition, visited } = this._player._navmesh._query.moveAlongSurface(polyRef, this._player.position, movementTarget);
         const moveAlongSurfaceFinalRef = visited[visited.length - 1];
 
+        // get height
         const { success: heightSuccess, height } = this._player._navmesh._query.getPolyHeight(moveAlongSurfaceFinalRef, resultPosition);
 
         // Update the player's target position based on forward and strafe movement
         this.targetPosition.x = resultPosition.x;
         this.targetPosition.z = resultPosition.z;
 
+        //
         if (heightSuccess) {
             this.targetPosition.y = height;
         }
 
+        // rotate player mesh to fake player rotation
         const rotation = Math.atan2(movementVector.x, movementVector.z) - Math.PI;
-        //this.targetRotation.y = rotation;
         this._player._mesh.entityMesh.rotation.y = rotation - 90;
-
-        /*
-        let speed = 1;
-        let turnSpeed = this._player.turnSpeed;
-
-        // Calculate forward movement in the X and Z directions based on the current rotation
-        let forwardX = Math.sin(this.targetRotation.y) * horizontal * speed;
-        let forwardZ = Math.cos(this.targetRotation.y) * horizontal * speed;
-
-        // Rotate player left/right only when right mouse is not held
-        if (!this._player._input.rightMouseDown) {
-            if (vertical > 0) this.targetRotation.y -= turnSpeed;
-            if (vertical < 0) this.targetRotation.y += turnSpeed;
-        }
-
-        let newPosition = new Vector3(this.targetPosition.x + forwardX, this.targetPosition.y, this.targetPosition.z + forwardZ);
-
-        // check if position is allowed
-        let { isPointOverPoly, point } = this._player._navmesh.checkPoint(newPosition);
-        console.log("CHECK", isPointOverPoly, point);
-        if (!isPointOverPoly) {
-            return false;
-        }
-
-        let distance = this.targetPosition.y - point.y;
-
-        // Update the player's target position based on forward and strafe movement
-        this.targetPosition.x = newPosition.x;
-        this.targetPosition.y -= distance;
-        this.targetPosition.z = newPosition.z;
-
-        // make sure the camera returns to default position
-        this._player._camera.backToDefaultRotation(this._player);
-        */
     }
 
     // Smoothly interpolate the player's position and rotation towards the target
