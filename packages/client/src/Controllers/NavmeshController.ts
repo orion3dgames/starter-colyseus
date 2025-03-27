@@ -10,13 +10,16 @@ import { VertexData } from "@babylonjs/core/Meshes/mesh.vertexData";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { GameScene } from "../Scenes/GameScene";
 import { LevelGenerator } from "./LevelGenerator";
-import { exportNavMesh, getNavMeshPositionsAndIndices, init, NavMesh, NavMeshQuery } from "recast-navigation";
+import { Crowd, CrowdAgent, exportNavMesh, getNavMeshPositionsAndIndices, init, NavMesh, NavMeshQuery } from "recast-navigation";
 import { GLTF2Export, IExportOptions } from "@babylonjs/serializers";
+import { Entity } from "../Entities/Entity";
 
 export class NavMeshController {
     // core
     public _scene: Scene;
+    public _gamescene: GameScene;
     public _game: GameController;
+    public _entities: Map<string, Entity>;
     public config: Config;
 
     //
@@ -24,11 +27,15 @@ export class NavMeshController {
     public _recast;
     public _navmesh: NavMesh;
     public _debugMesh: Mesh;
+    public _crowd: Crowd;
+    public _agents: Map<string, CrowdAgent> = new Map();
 
     constructor(gamescene: GameScene) {
         this._scene = gamescene._scene;
         this._game = gamescene._game;
+        this._gamescene = gamescene;
         this._level = gamescene._level;
+        this._entities = gamescene.entities;
     }
 
     async initialize() {
@@ -84,16 +91,68 @@ export class NavMeshController {
 
         const { success, navMesh } = generateSoloNavMesh(positions, indices, navMeshConfig);
 
-        console.log(this._level.mesh, success, navMesh);
-
         if (!success) {
             console.error("Error generating the navmesh", navMesh);
         }
 
         this._navmesh = navMesh;
+
+        await this.createCrowd();
+    }
+
+    update() {
+        const dt = 1 / 60;
+        const maxSubSteps = 10;
+        this._crowd.update(dt, maxSubSteps);
+
+        this._entities.forEach((entity: Entity) => {
+            entity._movement.targetPosition.x = entity._agent.interpolatedPosition.x;
+            entity._movement.targetPosition.y = entity._agent.interpolatedPosition.y;
+            entity._movement.targetPosition.z = entity._agent.interpolatedPosition.z;
+        });
+    }
+
+    impulse(sessionId, targetVelocity) {
+        let agent = this._agents.get(sessionId);
+        agent.requestMoveVelocity(targetVelocity);
+        console.log(this._crowd);
+    }
+
+    async createAgent(entity) {
+        const navMeshQuery = new NavMeshQuery(this._navmesh);
+        const { success, status, randomPolyRef, randomPoint } = navMeshQuery.findRandomPointAroundCircle(entity.position, 2);
+
+        const agent = this._crowd.addAgent(entity.position, {
+            radius: 1,
+            height: 2,
+            maxAcceleration: 4.0,
+            maxSpeed: 1.0,
+            collisionQueryRange: 0.5,
+            pathOptimizationRange: 0.0,
+            separationWeight: 1.0,
+        });
+        entity._agent = agent;
+
+        this._agents.set(entity.sessionId, agent);
+
+        return agent;
+    }
+
+    async createCrowd() {
+        const maxAgents = 10;
+        const maxAgentRadius = 1;
+        this._crowd = new Crowd(this._navmesh, { maxAgents, maxAgentRadius });
+        console.log(this._crowd);
+
+        // add all entities
+        this._gamescene.entities.forEach((entity: Entity) => {
+            this.createAgent(entity);
+        });
     }
 
     async clearNavmesh() {
+        this._crowd = null;
+        this._agents = new Map();
         this._navmesh = null;
         if (this._debugMesh) {
             this._debugMesh.dispose(false, true);

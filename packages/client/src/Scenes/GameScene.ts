@@ -125,6 +125,10 @@ export class GameScene {
             let delta = this._engine.getFps();
             const currentTime = Date.now();
 
+            if (this._navmesh._navmesh) {
+                this._navmesh.update();
+            }
+
             // game update loop
             this.entities.forEach((entity) => {
                 // 60 fps

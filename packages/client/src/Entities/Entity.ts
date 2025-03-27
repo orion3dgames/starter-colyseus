@@ -16,6 +16,7 @@ import { InterfaceController } from "../Controllers/InterfaceController";
 import { Room } from "colyseus.js";
 import { MeshController } from "./Entity/MeshController";
 import { NavMeshController } from "../Controllers/NavMeshController";
+import { CrowdAgent } from "recast-navigation";
 
 export class Entity extends TransformNode {
     public _camera: CameraController;
@@ -52,6 +53,8 @@ export class Entity extends TransformNode {
     public turnSpeed = 0.1; // Rotation speed
     public rot: number = 0;
     public sequence: number = 0;
+
+    public _agent: CrowdAgent;
 
     constructor(name: string, scene: Scene, gameScene: GameScene, schema, isCurrentPlayer = false) {
         super(name, scene);

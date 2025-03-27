@@ -5,7 +5,7 @@ import { GameRoom } from "../rooms/GameRoom";
 export class PlayerSchema extends Schema {
     // visible to all
     @type("float32") x: number = -7.5;
-    @type("float32") y: number = 0;
+    @type("float32") y: number = 0.2;
     @type("float32") z: number = 8.45;
     @type("float32") rot: number = -16.96;
     @type("string") name: string = "NAME";

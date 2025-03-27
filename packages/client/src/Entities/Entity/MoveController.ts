@@ -10,7 +10,7 @@ export class MoveController {
     private _game: GameController;
     private _scene: Scene;
 
-    private targetPosition: Vector3;
+    public targetPosition: Vector3;
     private targetRotation: Vector3;
 
     public playerInputs: PlayerInputs[] = []; // Stores the player's movement inputs for prediction/reconciliation
@@ -38,13 +38,21 @@ export class MoveController {
     // Moves the player based on input values for horizontal and vertical movement
     // Moves the player based on input values for horizontal and vertical movement
     public move(horizontal: number, vertical: number) {
-        let speed = this._player.speed;
+        let speed = 1;
         let turnSpeed = this._player.turnSpeed;
 
         // Calculate forward movement in the X and Z directions based on the current rotation
         let forwardX = Math.sin(this.targetRotation.y) * horizontal * speed;
         let forwardZ = Math.cos(this.targetRotation.y) * horizontal * speed;
 
+        /* tell the agent to move in a direction */
+        this._player._navmesh.impulse(this._player.sessionId, {
+            x: horizontal * speed,
+            y: 0,
+            z: vertical * speed,
+        });
+
+        /*
         // Rotate player left/right only when right mouse is not held
         if (!this._player._input.rightMouseDown) {
             if (vertical > 0) this.targetRotation.y -= turnSpeed;
@@ -66,6 +74,7 @@ export class MoveController {
         this.targetPosition.x = newPosition.x;
         this.targetPosition.y -= distance;
         this.targetPosition.z = newPosition.z;
+        */
 
         // make sure the camera returns to default position
         this._player._camera.backToDefaultRotation(this._player);
