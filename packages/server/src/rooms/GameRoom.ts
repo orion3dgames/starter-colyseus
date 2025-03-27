@@ -27,11 +27,9 @@ export class GameRoom extends Room<GameState> {
 
         //Set a simulation interval that can change the state of the game
         this.setSimulationInterval((dt) => {
-            this.update(dt);
+            this.state.update(dt);
         }, 1000);
     }
-
-    public update(dt) {}
 
     processMessages() {
         // Client message listeners:

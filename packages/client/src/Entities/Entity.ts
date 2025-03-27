@@ -84,10 +84,9 @@ export class Entity extends TransformNode {
         this._nameplate = new NameplateController(this);
         this._mesh = new MeshController(this);
 
-        // if current player
+        // current player only controllers
         if (isCurrentPlayer) {
             this._camera = new CameraController(scene);
-            //ddddddddddddddddthis._camera.createFollowCamera(this._scene, this);
             this._input = new InputController(this);
             this._interface.setCurrentPlayer(this);
         }
@@ -105,9 +104,7 @@ export class Entity extends TransformNode {
                 sequence: this._schema.sequence,
             };
 
-            // MULTIPLAYER DISABLED FOR THE MOMENT.
-
-            //console.table(debug);
+            // console.table(debug);
 
             // // update player data from server data
             // Object.assign(this, this._schema);

@@ -1,7 +1,7 @@
 // colyseus
 import { Client } from "colyseus.js";
 import { isLocal } from "../Utils/Utils";
-import axios from "axios";
+import Debugger from "../Utils/Debugger";
 
 export class NetworkController {
     public _client: Client;
@@ -51,17 +51,18 @@ export class NetworkController {
 
         // if room doesn't exist, create it
         if (!foundRoom) {
+            Debugger.log("NETWORK", "room does not exist, let's create a new one", { roomId: hash, user: user });
             return await this._client.create("gameroom", { roomId: hash, user: user });
         }
 
         // make sure room is not already full
         if (foundRoom.clients == foundRoom.maxClients) {
-            console.error("Room is full, no entry!");
+            Debugger.warn("NETWORK", "room is full, no entry", foundRoom);
             return false;
         }
 
         // else join it;
-        console.log("room already exists ", foundRoom);
+        Debugger.log("NETWORK", "room already exists, joining existing room", foundRoom);
         return await this._client.joinById(hash, { user: user });
     }
 }

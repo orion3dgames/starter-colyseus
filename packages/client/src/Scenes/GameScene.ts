@@ -14,6 +14,7 @@ import { getStateCallbacks } from "colyseus.js";
 import { CameraController } from "../Entities/Entity/CameraController";
 import { LevelGenerator } from "../Controllers/LevelGenerator";
 import { NavMeshController } from "../Controllers/NavMeshController";
+import Debugger from "../Utils/Debugger";
 
 export class GameScene {
     public _game: GameController;
@@ -107,15 +108,15 @@ export class GameScene {
 
         // colyseus callbacks
         this.$(this.room.state).players.onAdd((schema, sessionId) => {
-            console.log("[SCHEMA] PLAYER ADDED", schema);
+            Debugger.log("SCHEMA", "player added", schema);
             this.entities.set(sessionId, new Entity(sessionId, this._scene, this, schema, sessionId === this.sessionId));
         });
         this.$(this.room.state).players.onRemove((schema, sessionId) => {
-            console.log("[SCHEMA] PLAYER LEFT", schema);
             if (this.entities.get(sessionId)) {
                 this.entities.get(sessionId).delete();
             }
             this.entities.delete(sessionId);
+            Debugger.log("SCHEMA", "player removed", sessionId);
         });
 
         ////////////////////////////////////////////////////

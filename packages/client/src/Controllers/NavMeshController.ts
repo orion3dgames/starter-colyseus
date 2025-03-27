@@ -13,6 +13,7 @@ import { LevelGenerator } from "./LevelGenerator";
 import { Crowd, CrowdAgent, exportNavMesh, getNavMeshPositionsAndIndices, init, NavMesh, NavMeshQuery } from "recast-navigation";
 import { GLTF2Export, IExportOptions } from "@babylonjs/serializers";
 import { Entity } from "../Entities/Entity";
+import Debugger from "../Utils/Debugger";
 
 export class NavMeshController {
     // core
@@ -41,10 +42,11 @@ export class NavMeshController {
 
     async initialize() {
         this._recast = await init();
-        console.log("[RECAST] recast initialized");
+        //debug("RECAST", "");
+        Debugger.log("RECAST", "recast initialized");
     }
 
-    async exportToGLTF() {
+    async export() {
         const options: IExportOptions = {
             shouldExportNode: (node): boolean => {
                 return node.name === "debugNavMesh";
@@ -52,22 +54,13 @@ export class NavMeshController {
         };
         GLTF2Export.GLBAsync(this._scene, "fileName", options).then((glb) => {
             glb.downloadFiles();
+            Debugger.log("navmesh exported successfully", "RECAST");
         });
     }
 
-    checkPoint(position: Vector3) {
-        const navMeshQuery = new NavMeshQuery(this._navmesh);
-        const { success, status, point, polyRef, isPointOverPoly } = navMeshQuery.findClosestPoint(position);
-        if (isPointOverPoly) {
-            //onsole.log("[RECAST] navmesh check success: ", success, status, point);
-            return { isPointOverPoly, point };
-        }
-        //console.error("[RECAST] navmesh check failed: ", success, status, point);
-        return { isPointOverPoly, point };
-    }
+    async import() {}
 
     async regenerate(navMeshConfig = this.getDefaultConfig()) {
-        await this.clearNavmesh();
         await this.generateNavmesh(navMeshConfig);
         await this.generateNavMeshDebug();
     }
@@ -82,79 +75,27 @@ export class NavMeshController {
         const { success, navMesh } = generateSoloNavMesh(positions, indices, navMeshConfig);
 
         if (!success) {
-            console.error("Error generating the navmesh", navMesh);
+            Debugger.error("RECAST", "error generating the navmesh", navMesh);
         }
 
         this._navmesh = navMesh;
 
         this._query = new NavMeshQuery(this._navmesh);
-
-        //await this.createCrowd();
     }
 
-    update() {
-        /*
-        const dt = 1 / 60;
-        const maxSubSteps = 10;
-        this._crowd.update(dt, maxSubSteps);
-
-        this._entities.forEach((entity: Entity) => {
-            entity._movement.targetPosition.x = entity._agent.interpolatedPosition.x;
-            entity._movement.targetPosition.y = entity._agent.interpolatedPosition.y;
-            entity._movement.targetPosition.z = entity._agent.interpolatedPosition.z;
-        });*/
-    }
-
-    impulse(sessionId, targetVelocity) {
-        let agent = this._agents.get(sessionId);
-        agent.requestMoveVelocity(targetVelocity);
-        console.log(this._crowd);
-    }
-
-    async createAgent(entity) {
-        const navMeshQuery = new NavMeshQuery(this._navmesh);
-        const { success, status, randomPolyRef, randomPoint } = navMeshQuery.findRandomPointAroundCircle(entity.position, 2);
-
-        const agent = this._crowd.addAgent(entity.position, {
-            radius: 1,
-            height: 2,
-            maxAcceleration: 4.0,
-            maxSpeed: 1.0,
-            collisionQueryRange: 0.5,
-            pathOptimizationRange: 0.0,
-            separationWeight: 1.0,
-        });
-        entity._agent = agent;
-
-        this._agents.set(entity.sessionId, agent);
-
-        return agent;
-    }
-
-    async createCrowd() {
-        const maxAgents = 10;
-        const maxAgentRadius = 1;
-        this._crowd = new Crowd(this._navmesh, { maxAgents, maxAgentRadius });
-        console.log(this._crowd);
-
-        // add all entities
-        this._gamescene.entities.forEach((entity: Entity) => {
-            this.createAgent(entity);
-        });
-    }
+    update() {}
 
     async clearNavmesh() {
-        this._crowd = null;
-        this._agents = new Map();
         this._navmesh = null;
         if (this._debugMesh) {
             this._debugMesh.dispose(false, true);
         }
+        Debugger.log("RECAST", "navmesh reset");
     }
 
     async generateNavMeshDebug() {
         if (!this._navmesh) {
-            console.error("Navmesh does not exists", this._navmesh);
+            Debugger.error("RECAST", "navmesh does not exists");
             return false;
         }
 
@@ -209,7 +150,7 @@ export class NavMeshController {
         this._debugMesh = customMesh;
 
         // debug
-        console.log("[RECAST] navmesh debug created");
+        Debugger.log("RECAST", "navmesh debug created");
     }
 
     getPositionsAndIndices = (meshes: Mesh[]): [positions: Float32Array, indices: Uint32Array] => {

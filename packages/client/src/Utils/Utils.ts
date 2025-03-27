@@ -65,4 +65,22 @@ const generateRoomId = function () {
     return result;
 };
 
-export { generateUserName, isLocal, roundToTwo, roundTo, countPlayers, clamp, randomNumberInRange, distanceBetween, bytesToSize, generateRoomId };
+const debug = (prefix = "DEBUG", message, data = null, level = "log") => {
+    const levels = {
+        log: "color: blue;",
+        info: "color: green;",
+        warn: "color: orange;",
+        error: "color: red; font-weight: bold;",
+    };
+
+    const timestamp = new Date().toISOString();
+    const formattedPrefix = `[${prefix}]`;
+
+    if (console[level]) {
+        console[level](`%c${formattedPrefix} ${message}`, levels[level], data ? data : "");
+    } else {
+        console.log(`%c${formattedPrefix} ${message}`, levels["log"], data ? data : "");
+    }
+};
+
+export { generateUserName, isLocal, roundToTwo, roundTo, countPlayers, clamp, randomNumberInRange, distanceBetween, bytesToSize, generateRoomId, debug };

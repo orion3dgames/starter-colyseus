@@ -1,14 +1,9 @@
-import { Engine } from "@babylonjs/core/Engines/engine";
-import { Scene } from "@babylonjs/core/scene";
 import { Entity } from "../../Entities/Entity";
 import { InterfaceController } from "../InterfaceController";
-import { Room } from "colyseus.js";
-import { StackPanel } from "@babylonjs/gui/2D/controls/stackPanel";
 import { Control } from "@babylonjs/gui/2D/controls/control";
-import { Slider } from "@babylonjs/gui/2D/controls/sliders/slider";
-import { TextBlock } from "@babylonjs/gui/2D/controls/textBlock";
 import { Button } from "@babylonjs/gui/2D/controls/button";
 import { Tools } from "@babylonjs/core/Misc/tools";
+import Debugger from "../../Utils/Debugger";
 
 export class Screenshot {
     private _ui: InterfaceController;
@@ -44,7 +39,7 @@ export class Screenshot {
             this._ui.currentPlayer._camera.camera,
             { width: 2560, height: 1440, precision: 0.9 },
             () => {
-                console.log("Screnshot taken!");
+                Debugger.log("UI", "Screnshot taken");
             },
             "image/jpeg",
             true,

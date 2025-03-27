@@ -14,6 +14,7 @@ import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
 import { Color3 } from "@babylonjs/core/Maths/math.color";
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
+import Debugger from "../Utils/Debugger";
 
 type AssetEntry = {
     key: string;
@@ -40,8 +41,8 @@ export class AssetsController {
 
         // set list of assets
         this.assetDatabase = [
-            { key: "PLAYER_01", filename: "skeleton_01.glb", extension: "glb", type: "mesh", instantiate: true },
-            { key: "LEVEL_01", filename: "nav_test.glb", extension: "glb", type: "mesh" },
+            { key: "PLAYER_01", filename: "./characters/skeleton_01.glb", extension: "glb", type: "mesh", instantiate: true },
+            { key: "LEVEL_01", filename: "./level/level.glb", extension: "glb", type: "mesh" },
             { key: "GRASS_01", filename: "grass_01.jpg", extension: "jpg", type: "texture" },
             { key: "TXT_shadow_01", filename: "shadow_01.png", extension: "png", type: "texture" },
         ];
@@ -136,7 +137,7 @@ export class AssetsController {
         };
 
         this._assetsManager.onFinish = () => {
-            console.log("[ASSETS] loading complete", assetLoaded);
+            Debugger.log("ASSETS", "assets loaded", assetLoaded);
             for (let i in assetLoaded) {
                 this._game._loadedAssets[i] = assetLoaded[i];
             }

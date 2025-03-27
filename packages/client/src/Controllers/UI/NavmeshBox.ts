@@ -1,30 +1,17 @@
-import { Engine } from "@babylonjs/core/Engines/engine";
-import { Scene } from "@babylonjs/core/scene";
 import { Entity } from "../../Entities/Entity";
 import { InterfaceController } from "../InterfaceController";
-import { Room } from "colyseus.js";
 import { StackPanel } from "@babylonjs/gui/2D/controls/stackPanel";
 import { Control } from "@babylonjs/gui/2D/controls/control";
 import { Slider } from "@babylonjs/gui/2D/controls/sliders/slider";
 import { TextBlock } from "@babylonjs/gui/2D/controls/textBlock";
 import { Button } from "@babylonjs/gui/2D/controls/button";
-import { exportNavMesh } from "@recast-navigation/core";
+import Debugger from "../../Utils/Debugger";
 
 export class NavmeshBox {
-    private _engine: Engine;
-    private _scene: Scene;
-    private _room: Room;
-    private _entity: Entity;
     private _ui: InterfaceController;
-
-    private _debugTextUI;
 
     constructor(playerUI: InterfaceController, entity: Entity) {
         this._ui = playerUI;
-        this._engine = playerUI._game.engine;
-        this._scene = playerUI._scene;
-        this._entity = entity;
-        this._room = playerUI._room;
 
         // create UI
         this._createUI();
@@ -125,7 +112,7 @@ export class NavmeshBox {
                 let slider = this._ui._mainLayer.getControlByName(s) as Slider;
                 slider.value = newSettings[s];
             }
-            console.log("[RECAST] reset settings ", newSettings);
+            Debugger.log("RECAST", "navmesh setting reset", newSettings);
             this._ui.currentPlayer._navmesh.clearNavmesh();
         });
 
@@ -141,7 +128,7 @@ export class NavmeshBox {
         panel.addControl(exportButton);
 
         exportButton.onPointerDownObservable.add(() => {
-            this._ui.currentPlayer._navmesh.exportToGLTF();
+            this._ui.currentPlayer._navmesh.export();
         });
     }
 
