@@ -55,17 +55,6 @@ export class NavMeshController {
         });
     }
 
-    async findPath(start: Vector3, end: Vector3) {
-        const navMeshQuery = new NavMeshQuery(this._navmesh);
-        const { success, error, path } = navMeshQuery.computePath(start, end);
-        if (path.length > 0) {
-            console.log("[RECAST] navmesh query success: ", start, end, success, path);
-            return true;
-        }
-        console.error("[RECAST] navmesh query failed: ", start, end, error, path);
-        return false;
-    }
-
     checkPoint(position: Vector3) {
         const navMeshQuery = new NavMeshQuery(this._navmesh);
         const { success, status, point, polyRef, isPointOverPoly } = navMeshQuery.findClosestPoint(position);

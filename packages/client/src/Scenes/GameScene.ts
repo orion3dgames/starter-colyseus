@@ -57,6 +57,8 @@ export class GameScene {
         // load navmesh
         this._navmesh = new NavMeshController(this);
         await this._navmesh.initialize();
+        await this._navmesh.regenerate();
+        await this._navmesh.regenerate();
 
         // set sky color
         this._scene.clearColor = new Color4(0.1, 0.1, 0.1, 1);
