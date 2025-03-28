@@ -1,4 +1,4 @@
-class Config {
+export default class Config {
     // general settings
     title = "Starter Colyseus";
     version = "Version 0.0.1";
@@ -28,5 +28,3 @@ class Config {
         fontSize: 24,
     };
 }
-
-export { Config };

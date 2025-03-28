@@ -22,7 +22,7 @@ import { Engine } from "@babylonjs/core/Engines/engine";
 
 // IMPORT SCREEN
 import { SceneName } from "../../shared/types";
-import { Config } from "../../shared/Config";
+import Config from "../../shared/Config";
 import { GameController } from "./Controllers/GameController";
 import { GameScene } from "./Scenes/GameScene";
 

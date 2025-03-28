@@ -4,12 +4,13 @@
     "private": true,
     "description": "basic server",
     "main": "./src/index.ts",
+    "type": "module",
     "scripts": {
-        "dev": "ts-node-dev --respawn --transpile-only ./src/index.ts",
+        "dev": "tsx watch ./src/index.ts",
         "start": "ts-node --transpile-only src/index.ts",
         "build": "tsc && cp -r public dist"
     },
-    "author": "Orion3d",
+    "author": "Orion3d", 
     "license": "MIT",
     "devDependencies": {
         "@colyseus/core": "^0.16.14",
@@ -22,7 +23,8 @@
         "@types/node": "^22.13.10",
         "ts-node": "^10.9.2",
         "ts-node-dev": "^2.0.0",
-        "typescript": "^5.8.2"
+        "typescript": "^5.8.2",
+        "recast-navigation": "^0.39.0"
     },
     "dependencies": {
         "cors": "^2.8.5",

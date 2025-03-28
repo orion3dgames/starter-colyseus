@@ -1,4 +1,3 @@
-import { Config } from "../../../shared/Config";
 import { Scene } from "@babylonjs/core/scene";
 import { GameController } from "./GameController";
 import { Mesh } from "@babylonjs/core/Meshes/mesh";
@@ -9,7 +8,6 @@ export class LevelGenerator {
     public _scene: Scene;
     public _game: GameController;
     public _shadow: ShadowGenerator;
-    public config: Config;
 
     public mesh;
 

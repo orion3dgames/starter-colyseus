@@ -1,10 +1,17 @@
 import { StateView } from "@colyseus/schema";
 import { Room, Client } from "@colyseus/core";
 import Logger from "../../../shared/Utils/Logger";
-import { Config } from "../../../shared/Config";
-import { ServerMsg } from "../../../shared/types";
+import Config from "../../../shared/Config";
+import { ServerMsg } from "../../../shared/src";
 import { GameState } from "../schemas/GameState";
 import { PlayerSchema } from "../schemas/PlayerSchema";
+import { promises as fs } from "fs";
+import { init } from "@recast-navigation/core";
+
+async function loadMonoCounter() {
+    const data = await fs.readFile("../../assets/models/level/level.bin", "binary");
+    return Buffer.from(data);
+}
 
 export class GameRoom extends Room<GameState> {
     // initialize empty room state
@@ -12,8 +19,12 @@ export class GameRoom extends Room<GameState> {
     maxClients = 4;
     config: Config;
 
+    // navmesh
+    _recast;
+    _navmesh;
+
     // Colyseus will invoke when creating the room instance
-    onCreate(options: any) {
+    async onCreate(options: any) {
         Logger.info("[gameserver] creating room id: ", options.roomId);
 
         //
@@ -21,6 +32,14 @@ export class GameRoom extends Room<GameState> {
 
         //
         this.config = new Config();
+
+        //
+        this._recast = await init();
+        /*
+        const array = await loadMonoCounter();
+        const arr = new Uint8Array(array);
+        const { navMesh } = importNavMesh(arr);
+        this._navmesh = navMesh;*/
 
         //
         this.processMessages();

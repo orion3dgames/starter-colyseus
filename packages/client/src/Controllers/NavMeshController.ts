@@ -1,4 +1,3 @@
-import { Config } from "../../../shared/Config";
 import { Scene } from "@babylonjs/core/scene";
 import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
 import { GameController } from "./GameController";
@@ -7,11 +6,9 @@ import { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { generateSoloNavMesh } from "recast-navigation/generators";
 import { VertexBuffer } from "@babylonjs/core/Meshes/buffer";
 import { VertexData } from "@babylonjs/core/Meshes/mesh.vertexData";
-import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { GameScene } from "../Scenes/GameScene";
 import { LevelGenerator } from "./LevelGenerator";
-import { Crowd, CrowdAgent, exportNavMesh, getNavMeshPositionsAndIndices, importNavMesh, init, NavMesh, NavMeshQuery } from "recast-navigation";
-import { GLTF2Export, IExportOptions } from "@babylonjs/serializers";
+import { exportNavMesh, getNavMeshPositionsAndIndices, importNavMesh, init, NavMesh, NavMeshQuery } from "recast-navigation";
 import { Entity } from "../Entities/Entity";
 import Debugger from "../Utils/Debugger";
 
@@ -21,7 +18,6 @@ export class NavMeshController {
     public _gamescene: GameScene;
     public _game: GameController;
     public _entities: Map<string, Entity>;
-    public config: Config;
 
     //
     public _level: LevelGenerator;
@@ -29,8 +25,6 @@ export class NavMeshController {
     public _navmesh: NavMesh;
     public _query: NavMeshQuery;
     public _debugMesh: Mesh;
-    public _crowd: Crowd;
-    public _agents: Map<string, CrowdAgent> = new Map();
 
     constructor(gamescene: GameScene) {
         this._scene = gamescene._scene;

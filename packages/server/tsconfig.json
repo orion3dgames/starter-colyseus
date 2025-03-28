@@ -1,22 +1,47 @@
 {
-    "compileOnSave": true,
     "compilerOptions": {
-        "target": "ES6",
-        "module": "CommonJS",
-        "sourceMap": false,
-        "outDir": "./dist/server",
-        "strict": false,
-        "experimentalDecorators": true,
-        "esModuleInterop": true,
+        // Treat files as modules even if it doesn't use import/export
+        "moduleDetection": "force",
+
+        // Ignore module structure
+        "module": "Preserve",
+
+        // Allow JSON modules to be imported
         "resolveJsonModule": true,
-        "removeComments": true,
+
+        // Allow JS files to be imported from TS and vice versa
         "allowJs": true,
-        "moduleResolution": "node",
-        "baseUrl": ".",
-        "paths": {
-            "@shared/*": ["../shared/*"]
-        }
+
+        // Use correct ESM import behavior
+        "esModuleInterop": true,
+
+        // Disallow features that require cross-file awareness
+        "isolatedModules": true,
+
+        "experimentalDecorators": true
     },
-    "include": ["src/*", "src/**/*.d.ts"],
-    "exclude": ["node_modules", "**/*.spec.js"]
+    "exclude": ["node_modules"],
+    "include": ["src/**/*.ts"]
 }
+
+// {
+//     "compileOnSave": true,
+//     "compilerOptions": {
+//         "target": "ES6",
+//         "module": "CommonJS",
+//         "sourceMap": false,
+//         "outDir": "./dist/server",
+//         "strict": false,
+//         "experimentalDecorators": true,
+//         "esModuleInterop": true,
+//         "removeComments": true,
+//         "allowJs": true,
+//         "moduleResolution": "node",
+//         "baseUrl": ".",
+//         "paths": {
+//             "@shared/*": ["../shared/*"]
+//         }
+//     },
+//     "include": ["src/*", "src/**/*.d.ts"],
+//     "exclude": ["node_modules", "**/*.spec.js"]
+// }

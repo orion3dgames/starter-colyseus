@@ -3,7 +3,6 @@ import config from "@colyseus/tools";
 import express from "express";
 
 import { matchMaker } from "@colyseus/core";
-import { logger } from "@colyseus/core";
 import { monitor } from "@colyseus/monitor";
 import { playground } from "@colyseus/playground";
 

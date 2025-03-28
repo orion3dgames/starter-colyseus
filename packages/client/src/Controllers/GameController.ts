@@ -1,5 +1,5 @@
 import { NetworkController } from "./NetworkController";
-import { Config } from "../../../shared/Config";
+import Config from "../../../shared/Config";
 import { SceneName, User } from "../../../shared/types";
 import { generateUserName } from "../Utils/Utils";
 import { Engine } from "@babylonjs/core/Engines/engine";

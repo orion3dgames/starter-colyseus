@@ -1,0 +1,5 @@
+{
+    "name": "starter-shared",
+    "main": "./index.ts",
+    "type": "module"
+}
