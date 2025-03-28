@@ -91,7 +91,8 @@ export class Entity extends TransformNode {
         }
 
         // spawn player
-        this._mesh.spawn();
+        this._mesh.spawnCapsule();
+        //this._mesh.spawnCharacter();
 
         // update from server
         gameScene.$(this._schema).onChange((test) => {

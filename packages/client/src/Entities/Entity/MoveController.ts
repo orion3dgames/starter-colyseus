@@ -66,6 +66,7 @@ export class MoveController {
         // rotate player mesh to fake player rotation
         const rotation = Math.atan2(movementVector.x, movementVector.z) - Math.PI;
         this._player._mesh.entityMesh.rotation.y = rotation;
+        console.log(this._player._mesh.entityMesh.rotation);
     }
 
     // Smoothly interpolate the player's position and rotation towards the target
