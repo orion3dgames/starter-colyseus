@@ -6,6 +6,7 @@ import Debugger from "../Utils/Debugger";
 export class NetworkController {
     public _client: Client;
     public port;
+    public room;
 
     constructor(port) {
         let url = "wss://" + window.location.hostname;

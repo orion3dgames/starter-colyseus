@@ -30,7 +30,7 @@ export class NavmeshBox {
         this._ui._mainLayer.addControl(panel);
 
         //////////////////////////////
-        const showButton = Button.CreateSimpleButton("simpleButton", "TOGGLE NAVMESH");
+        const showButton = Button.CreateSimpleButton("simpleButton", "NAVMESH");
         showButton.width = "200px;";
         showButton.height = "30px";
         showButton.top = "15px;";
@@ -144,6 +144,21 @@ export class NavmeshBox {
 
         importButton.onPointerDownObservable.add(() => {
             this._ui.currentPlayer._navmesh.import();
+        });
+
+        //////////////////////////////
+        const toggleMeshBtn = Button.CreateSimpleButton("simpleButton", "TOGGLE MESH");
+        toggleMeshBtn.width = "200px;";
+        toggleMeshBtn.height = "30px";
+        toggleMeshBtn.color = "white";
+        toggleMeshBtn.background = "#000";
+        toggleMeshBtn.thickness = 1;
+        toggleMeshBtn.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
+        toggleMeshBtn.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
+        panel.addControl(toggleMeshBtn);
+
+        toggleMeshBtn.onPointerDownObservable.add(() => {
+            this._ui.currentPlayer._navmesh._debugMesh.isVisible = !this._ui.currentPlayer._navmesh._debugMesh.isVisible;
         });
     }
 

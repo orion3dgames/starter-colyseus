@@ -176,6 +176,9 @@ export class NavMeshController {
         // Save for later use
         this._debugMesh = customMesh;
 
+        // hide mesh by default
+        this._debugMesh.isVisible = false;
+
         // debug
         Debugger.log("RECAST", "navmesh debug created");
     }

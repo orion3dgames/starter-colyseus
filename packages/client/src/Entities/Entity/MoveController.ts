@@ -65,7 +65,7 @@ export class MoveController {
 
         // rotate player mesh to fake player rotation
         const rotation = Math.atan2(movementVector.x, movementVector.z) - Math.PI;
-        this._player._mesh.entityMesh.rotation.y = rotation - 90;
+        this._player._mesh.entityMesh.rotation.y = rotation;
     }
 
     // Smoothly interpolate the player's position and rotation towards the target
@@ -82,7 +82,7 @@ export class MoveController {
 
         if (!this.canMove(latestInput)) return; // Check if the player is allowed to move
 
-        this._room.send(ServerMsg.PLAYER_MOVE, latestInput); // Send the move input to the server
+        this._game.sendMessage(ServerMsg.PLAYER_MOVE, latestInput); // Send the move input to the server
         this.predictionMove(latestInput); // Perform local prediction of the player's movement
     }
 

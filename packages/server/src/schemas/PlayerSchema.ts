@@ -7,7 +7,7 @@ export class PlayerSchema extends Schema {
     @type("float32") x: number = -7.5;
     @type("float32") y: number = 0.2;
     @type("float32") z: number = 8.45;
-    @type("float32") rot: number = -16.96;
+    @type("float32") rot: number = 0;
     @type("string") name: string = "NAME";
 
     // only needs to be visible to current player

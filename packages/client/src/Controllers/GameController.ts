@@ -1,6 +1,6 @@
 import { NetworkController } from "./NetworkController";
 import { Config } from "../../../shared/Config";
-import { SceneName, User } from "../../../shared/types";
+import { SceneName, ServerMsg, User } from "../../../shared/types";
 import { generateUserName } from "../Utils/Utils";
 import { Engine } from "@babylonjs/core/Engines/engine";
 import { Scene } from "@babylonjs/core/scene";
@@ -8,6 +8,7 @@ import { AssetsController } from "./AssetsController";
 import { AssetContainer } from "@babylonjs/core/assetContainer";
 import { LoadingController } from "./LoadingController";
 import { PhysicsController } from "./PhysicsController";
+import Debugger from "../Utils/Debugger";
 
 export class GameController {
     // core
@@ -87,5 +88,23 @@ export class GameController {
 
     public setScene(newState: SceneName) {
         this.nextScene = newState;
+    }
+
+    /////////////////////////////////////////
+    //////////// ROOM MANAGEMENT ///////////
+    /////////////////////////////////////////
+
+    public sendMessage(type: ServerMsg, data: {} = {}) {
+        let message = {
+            date: new Date().getTime(),
+        };
+        if (Object.keys(data).length) {
+            for (const [key, value] of Object.entries(data)) {
+                message[key] = value;
+            }
+        }
+        this.joinedRoom.send(type, message);
+
+        Debugger.log("CLIENT", "sending message to server", message);
     }
 }

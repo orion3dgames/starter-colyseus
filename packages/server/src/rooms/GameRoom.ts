@@ -13,7 +13,7 @@ export class GameRoom extends Room<GameState> {
     config: Config;
 
     // Colyseus will invoke when creating the room instance
-    onCreate(options: any) {
+    async onCreate(options: any) {
         Logger.info("[gameserver] creating room id: ", options.roomId);
 
         //
