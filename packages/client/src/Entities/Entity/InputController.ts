@@ -14,6 +14,7 @@ export class InputController {
     public moveKeys = { forward: false, backward: false, left: false, right: false };
     public rightMouseDown: boolean = false;
     public isCameraRotating: boolean = false;
+    public spacePressed: boolean = false;
 
     constructor(entity: Entity) {
         this._camera = entity._camera;
@@ -25,6 +26,7 @@ export class InputController {
 
     _setupInputListeners() {
         this._scene.onKeyboardObservable.add((kbInfo) => {
+            console.log(kbInfo.event.key);
             switch (kbInfo.type) {
                 case KeyboardEventTypes.KEYDOWN:
                     this._handleKeyDown(kbInfo.event.key);
@@ -92,6 +94,9 @@ export class InputController {
                     updated = this.moveKeys.right = true;
                 }
                 break;
+            case "Space":
+                console.log(key);
+                break;
         }
         if (updated) {
             this.needsUpdate = true;
@@ -125,7 +130,11 @@ export class InputController {
                     updated = !(this.moveKeys.right = false);
                 }
                 break;
+            case "Space":
+                this.spacePressed = true;
+                break;
         }
+
         if (updated && !Object.values(this.moveKeys).some(Boolean)) {
             this.needsUpdate = false;
         }
