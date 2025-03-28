@@ -36,7 +36,6 @@ export class Entity extends TransformNode {
     public _schema; // colyseus schema
 
     // mesh
-    public playerMesh: Mesh;
     public nameplateMesh: Mesh;
 
     // other properties
@@ -141,7 +140,7 @@ export class Entity extends TransformNode {
     }
 
     public delete() {
-        if (this.playerMesh) {
+        if (this._mesh.entityMesh) {
             this._mesh.entityMesh.dispose();
         }
         if (this.nameplateMesh) {

@@ -24,6 +24,14 @@ export default config({
     },
 
     initializeExpress: (app) => {
+        /**
+         * Use @colyseus/playground
+         * (It is not recommended to expose this route in a production environment)
+         */
+        if (process.env.NODE_ENV !== "production") {
+            app.use("/play", playground());
+        }
+
         // matchmaker query
         app.get("/rooms/:roomName?", async (req, res) => {
             const conditions: any = {

@@ -33,7 +33,7 @@
         "@babylonjs/serializers": "7.51.3",
         "axios": "1.8.3",
         "babylonjs-gltf2interface": "7.51.3",
-        "colyseus.js": "^0.16.11",
+        "colyseus.js": "^0.16.15",
         "recast-navigation": "^0.39.0",
         "unique-names-generator": "^4.7.1",
         "@dimforge/rapier3d-compat-simd": "^0.14.0"
