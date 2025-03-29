@@ -20,6 +20,9 @@ export class PlayerSchema extends Schema {
     _navmesh: Navmesh;
     sessionId: string;
 
+    //
+    lastKnowValidHeight: [];
+
     constructor(auth, client, gameRoom: GameRoom) {
         super();
 
@@ -64,11 +67,18 @@ export class PlayerSchema extends Schema {
         const { success: heightSuccess, height } = this._navmesh._query.getPolyHeight(moveAlongSurfaceFinalRef, resultPosition); // get height
 
         // Update the player's target position based on forward and strafe movement
-        const newPosition = {
+        let newPosition = {
             x: resultPosition.x,
-            y: heightSuccess ? height : playerPosition.y,
             z: resultPosition.z,
+            y: playerPosition.y,
         };
+
+        // make sure the height is valid and on navmesh
+        if (heightSuccess) {
+            newPosition.y = height;
+        } else {
+            newPosition = playerPosition;
+        }
 
         // set new position
         this.x = newPosition.x;

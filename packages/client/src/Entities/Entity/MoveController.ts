@@ -53,12 +53,10 @@ export class MoveController {
         // get height
         const { success: heightSuccess, height } = this._player._navmesh._query.getPolyHeight(moveAlongSurfaceFinalRef, resultPosition);
 
-        // Update the player's target position based on forward and strafe movement
-        this.targetPosition.x = resultPosition.x;
-        this.targetPosition.z = resultPosition.z;
-
-        //
         if (heightSuccess) {
+            // Update the player's target position based on forward and strafe movement
+            this.targetPosition.x = resultPosition.x;
+            this.targetPosition.z = resultPosition.z;
             this.targetPosition.y = height;
         }
 
