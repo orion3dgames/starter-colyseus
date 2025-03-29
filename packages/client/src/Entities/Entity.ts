@@ -104,18 +104,18 @@ export class Entity extends TransformNode {
                 sequence: this._schema.sequence,
             };
 
-            // console.table(debug);
+            console.table(debug);
 
             // // update player data from server data
-            // Object.assign(this, this._schema);
+            Object.assign(this, this._schema);
 
             // // set default position
-            // this._movement.setPositionAndRotation(this._schema); // set next default position from server entity
+            this._movement.setPositionAndRotation(this._schema); // set next default position from server entity
 
-            // // do server reconciliation on client if current player only & not blocked
-            // if (this.isCurrentPlayer) {
-            //     this._movement.reconcileMove(this._schema.sequence); // set default entity position
-            // }
+            // do server reconciliation on client if current player only & not blocked
+            if (this.isCurrentPlayer) {
+                this._movement.reconcileMove(this._schema.sequence); // set default entity position
+            }
         });
 
         // show entity label
@@ -124,6 +124,7 @@ export class Entity extends TransformNode {
 
     public update(delta: number) {
         this._movement.update();
+
         // update only for current player
         if (this.isCurrentPlayer) {
             this._camera.update(this);
@@ -133,9 +134,8 @@ export class Entity extends TransformNode {
     public updateServerRate() {
         // update only for current player
         if (this.isCurrentPlayer) {
-            this._input.update();
             // update entity movement
-
+            this._input.update();
             this._interface.update();
         }
     }

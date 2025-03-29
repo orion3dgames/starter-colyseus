@@ -13,6 +13,10 @@ Building a basic multiplayer game using colyseus
 - Babylon.js 7.x.x [https://www.babylonjs.com/](https://www.babylonjs.com/)
 - Colyseus 0.16.x [https://colyseus.io/](https://colyseus.io/)
 
+
+# Requirements
+- Node 22+ to run the server
+
 ## How to run
 - Run `npm run server-dev` to launch the server
 - Run `npm run client-dev` to launch the client

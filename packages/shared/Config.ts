@@ -14,7 +14,7 @@ class Config {
     movementSendRate = 50; // Set frequency the client input are sent to server when changed, in milliseconds
 
     // players
-    defaultSpeed = 1;
+    defaultSpeed = 0.4;
     defaultTurnSpeed = 0.2;
 
     // theme

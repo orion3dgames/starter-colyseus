@@ -31,24 +31,23 @@ export class MoveController {
 
     // Set the player's target position and rotation based on external input (e.g., from the server)
     public setPositionAndRotation(entity): void {
-        this.targetPosition = new Vector3(entity.x, 0, entity.z); // Set the new target position (y is set to 0)
+        this.targetPosition = new Vector3(entity.x, entity.y, entity.z); // Set the new target position (y is set to 0)
         this.targetRotation = new Vector3(0, entity.rot, 0); // Set the new target rotation (yaw only)
     }
 
     // Moves the player based on input values for horizontal and vertical movement
-    // Moves the player based on input values for horizontal and vertical movement
     public move(horizontal: number, vertical: number) {
-        let playerPosition = this._player.position.clone();
+        let playerPosition = this.targetPosition.clone();
 
         // Normalize the movement vector to ensure consistent movement speed regardless of direction
-        const movementVector = new Vector3(horizontal, 0, vertical);
+        const movementVector = new Vector3(horizontal * this._player.speed, 0, vertical * this._player.speed);
         const movementTarget = playerPosition.add(movementVector);
 
         //
-        const { nearestRef: polyRef } = this._player._navmesh._query.findNearestPoly(this._player.position);
+        const { nearestRef: polyRef } = this._player._navmesh._query.findNearestPoly(playerPosition);
 
         // Move along the surface of the navmesh
-        const { resultPosition, visited } = this._player._navmesh._query.moveAlongSurface(polyRef, this._player.position, movementTarget);
+        const { resultPosition, visited } = this._player._navmesh._query.moveAlongSurface(polyRef, playerPosition, movementTarget);
         const moveAlongSurfaceFinalRef = visited[visited.length - 1];
 
         // get height
@@ -66,13 +65,15 @@ export class MoveController {
         // rotate player mesh to fake player rotation
         const rotation = Math.atan2(movementVector.x, movementVector.z) - Math.PI;
         this._player._mesh.entityMesh.rotation.y = rotation;
-        console.log(this._player._mesh.entityMesh.rotation);
     }
 
     // Smoothly interpolate the player's position and rotation towards the target
     public update(tween: number = 0.1) {
-        Vector3.LerpToRef(this._player.position, this.targetPosition, tween, this._player.position);
-        Vector3.LerpToRef(this._player.rotation, this.targetRotation, tween, this._player.rotation);
+        let l = this._player.position.subtract(this.targetPosition).length();
+        if (l > 0.01) {
+            Vector3.LerpToRef(this._player.position, this.targetPosition, tween, this._player.position);
+            Vector3.LerpToRef(this._player.rotation, this.targetRotation, tween, this._player.rotation);
+        }
     }
 
     // Processes the player's movement input, sends it to the server, and performs prediction

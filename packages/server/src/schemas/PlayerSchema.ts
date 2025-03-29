@@ -1,5 +1,6 @@
 import { Schema, type, view } from "@colyseus/schema";
 import { GameRoom } from "../rooms/GameRoom";
+import { Navmesh } from "../controllers/Navmesh";
 
 // State sync: Player structure
 export class PlayerSchema extends Schema {
@@ -16,6 +17,7 @@ export class PlayerSchema extends Schema {
     @type("int16") sequence: number = 0;
 
     gameRoom: GameRoom;
+    _navmesh: Navmesh;
     sessionId: string;
 
     constructor(auth, client, gameRoom: GameRoom) {
@@ -30,6 +32,7 @@ export class PlayerSchema extends Schema {
         }
 
         this.gameRoom = gameRoom;
+        this._navmesh = gameRoom._navmesh;
         this.sessionId = client.sessionId;
         this.speed = gameRoom.config.defaultSpeed;
         this.turnSpeed = gameRoom.config.defaultTurnSpeed;
@@ -37,6 +40,45 @@ export class PlayerSchema extends Schema {
     }
 
     move(horizontal: number, vertical: number, sequence: number) {
+        let playerPosition = { x: this.x, y: this.y, z: this.z };
+
+        const movementVector = {
+            x: horizontal * this.speed,
+            y: 0,
+            z: vertical * this.speed,
+        };
+
+        // Normalize the movement vector to ensure consistent movement speed regardless of direction
+        const movementTarget = {
+            x: playerPosition.x + movementVector.x,
+            y: playerPosition.y + movementVector.y,
+            z: playerPosition.z + movementVector.z,
+        };
+
+        // find closest region
+        const { nearestRef: polyRef } = this._navmesh._query.findNearestPoly(playerPosition);
+
+        // Move along the surface of the navmesh
+        const { resultPosition, visited } = this._navmesh._query.moveAlongSurface(polyRef, playerPosition, movementTarget);
+        const moveAlongSurfaceFinalRef = visited[visited.length - 1];
+        const { success: heightSuccess, height } = this._navmesh._query.getPolyHeight(moveAlongSurfaceFinalRef, resultPosition); // get height
+
+        // Update the player's target position based on forward and strafe movement
+        const newPosition = {
+            x: resultPosition.x,
+            y: heightSuccess ? height : playerPosition.y,
+            z: resultPosition.z,
+        };
+
+        // set new position
+        this.x = newPosition.x;
+        this.z = newPosition.z;
+        this.y = newPosition.y;
+
+        // update sequence
+        this.sequence = sequence;
+
+        /*
         let speed = this.speed;
         let turnSpeed = this.turnSpeed;
         let rotation = this.rot;
@@ -67,7 +109,7 @@ export class PlayerSchema extends Schema {
             sequence: this.sequence,
         };
 
-        console.table(debug);
+        console.table(debug);*/
     }
 
     update(dt) {}

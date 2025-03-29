@@ -5,12 +5,18 @@ import { Config } from "../../../shared/Config";
 import { ServerMsg } from "../../../shared/types";
 import { GameState } from "../schemas/GameState";
 import { PlayerSchema } from "../schemas/PlayerSchema";
+import { Navmesh } from "../controllers/Navmesh";
+
+//import * as recast from "recast-navigation";
+import { init, NavMeshQuery } from "recast-navigation";
 
 export class GameRoom extends Room<GameState> {
     // initialize empty room state
     state = new GameState("game");
     maxClients = 4;
     config: Config;
+
+    public _navmesh: Navmesh;
 
     // Colyseus will invoke when creating the room instance
     async onCreate(options: any) {
@@ -22,8 +28,14 @@ export class GameRoom extends Room<GameState> {
         //
         this.config = new Config();
 
+        // Initialize navigation system
+        this._navmesh = new Navmesh(this);
+        await this._navmesh.init();
+
         //
         this.processMessages();
+
+        console.log("[gameserver] random stuff");
 
         //Set a simulation interval that can change the state of the game
         this.setSimulationInterval((dt) => {

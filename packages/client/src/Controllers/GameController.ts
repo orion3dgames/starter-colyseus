@@ -105,6 +105,6 @@ export class GameController {
         }
         this.joinedRoom.send(type, message);
 
-        Debugger.log("CLIENT", "sending message to server", message);
+        //Debugger.log("CLIENT", "sending message to server", message);
     }
 }
