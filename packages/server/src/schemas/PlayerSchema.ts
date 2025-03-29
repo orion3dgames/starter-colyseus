@@ -123,7 +123,6 @@ export class PlayerSchema extends Schema {
     update(dt) {
         this.findClosestGift();
 
-        console.log(this.closestGiftDistance);
         if (this.closestGiftDistance < 1) {
             this.closestGift.delete();
             this.gameRoom.state.gifts.delete(this.closestGift.sessionId);

@@ -33,7 +33,6 @@ export class GameState extends Schema {
             let sessionId = randomUUID();
             const gift = new GiftSchema(this, freeSpot, sessionId);
             this.gifts.set(sessionId, gift);
-            console.log("SPAWNED A GIFT AT POSITION", freeSpot);
         }
     }
 
