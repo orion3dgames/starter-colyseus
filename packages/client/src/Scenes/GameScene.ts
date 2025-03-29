@@ -128,7 +128,7 @@ export class GameScene {
             Debugger.log("SCHEMA", "gift added", schema);
             this.entities.set(sessionId, new Gift(sessionId, this._scene, this, schema));
         });
-        this.$(this.room.state).players.onRemove((schema, sessionId) => {
+        this.$(this.room.state).gifts.onRemove((schema, sessionId) => {
             if (this.entities.get(sessionId)) {
                 this.entities.get(sessionId).delete();
             }

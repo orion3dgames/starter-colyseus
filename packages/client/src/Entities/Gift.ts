@@ -97,5 +97,12 @@ export class Gift extends TransformNode {
 
     public updateServerRate() {}
 
-    public delete() {}
+    public delete() {
+        if (this._mesh.entityMesh) {
+            this._mesh.entityMesh.dispose();
+        }
+        if (this.nameplateMesh) {
+            this.nameplateMesh.dispose();
+        }
+    }
 }

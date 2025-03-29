@@ -1,6 +1,7 @@
 import { Schema, type, view } from "@colyseus/schema";
 import { GameRoom } from "../rooms/GameRoom";
 import { Navmesh } from "../controllers/Navmesh";
+import { GiftSchema } from "./GiftSchema";
 
 // State sync: Player structure
 export class PlayerSchema extends Schema {
@@ -23,6 +24,10 @@ export class PlayerSchema extends Schema {
     //
     lastKnowValidHeight: [];
 
+    //
+    closestGift: GiftSchema;
+    closestGiftDistance: number; ///
+
     constructor(auth, client, gameRoom: GameRoom) {
         super();
 
@@ -43,8 +48,10 @@ export class PlayerSchema extends Schema {
     }
 
     move(horizontal: number, vertical: number, sequence: number) {
+        // save current position
         let playerPosition = { x: this.x, y: this.y, z: this.z };
 
+        // calculate forces
         const movementVector = {
             x: horizontal * this.speed,
             y: 0,
@@ -87,42 +94,41 @@ export class PlayerSchema extends Schema {
 
         // update sequence
         this.sequence = sequence;
-
-        /*
-        let speed = this.speed;
-        let turnSpeed = this.turnSpeed;
-        let rotation = this.rot;
-
-        // Player's forward direction (Z-axis movement)
-        let forwardX = Math.sin(rotation);
-        let forwardZ = Math.cos(rotation);
-
-        // Move forward/backward
-        this.x += forwardX * horizontal * speed;
-        this.z += forwardZ * horizontal * speed;
-
-        // Rotate player left/right
-        if (vertical > 0) {
-            this.rot -= turnSpeed;
-        }
-        if (vertical < 0) {
-            this.rot += turnSpeed;
-        }
-
-        this.sequence = sequence;
-
-        let debug = {
-            x: this.x,
-            y: this.y,
-            z: this.z,
-            rot: this.rot,
-            sequence: this.sequence,
-        };
-
-        console.table(debug);*/
     }
 
-    update(dt) {}
+    getPosition() {
+        return { x: this.x, y: this.y, z: this.z };
+    }
+
+    distanceBetweenVectors(v1, v2) {
+        return Math.sqrt((v2.x - v1.x) ** 2 + (v2.y - v1.y) ** 2 + (v2.z - v1.z) ** 2);
+    }
+
+    /**
+     */
+    findClosestGift() {
+        let closestDistance = 1000000;
+        this.gameRoom.state.gifts.forEach((entity: any) => {
+            let playerPos = this.getPosition();
+            let entityPos = entity.getPosition();
+            let distanceBetween = this.distanceBetweenVectors(playerPos, entityPos);
+            if (distanceBetween < closestDistance) {
+                closestDistance = distanceBetween;
+                this.closestGift = entity;
+                this.closestGiftDistance = distanceBetween;
+            }
+        });
+    }
+
+    update(dt) {
+        this.findClosestGift();
+
+        console.log(this.closestGiftDistance);
+        if (this.closestGiftDistance < 1) {
+            this.closestGift.delete();
+            this.gameRoom.state.gifts.delete(this.closestGift.sessionId);
+        }
+    }
 
     delete() {}
 }

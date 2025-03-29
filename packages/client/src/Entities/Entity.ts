@@ -105,7 +105,7 @@ export class Entity extends TransformNode {
                 sequence: this._schema.sequence,
             };
 
-            console.table(debug);
+            //console.table(debug);
 
             // // update player data from server data
             Object.assign(this, this._schema);

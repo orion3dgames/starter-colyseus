@@ -21,16 +21,18 @@ export class GameState extends Schema {
     spawnGifts() {
         // check if available space
         let freeSpot: any = false;
-        this.spawnPositions.forEach((element) => {
+        this.spawnPositions.forEach((element, key) => {
             if (!element.used && !freeSpot) {
                 element.used = true;
                 freeSpot = element;
+                freeSpot.key = key;
             }
         });
 
         if (freeSpot) {
-            const gift = new GiftSchema(this, freeSpot);
-            this.gifts.set(randomUUID(), gift);
+            let sessionId = randomUUID();
+            const gift = new GiftSchema(this, freeSpot, sessionId);
+            this.gifts.set(sessionId, gift);
             console.log("SPAWNED A GIFT AT POSITION", freeSpot);
         }
     }
