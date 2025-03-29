@@ -8,6 +8,7 @@ import { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { InstancedMesh } from "@babylonjs/core/Meshes/instancedMesh";
 import { GameController } from "../../Controllers/GameController";
 import { AssetContainer } from "@babylonjs/core/assetContainer";
+import { Gift } from "../Gift";
 
 const mergeMeshAndSkeleton = function (mesh, skeleton) {
     // pick what you want to merge
@@ -34,7 +35,7 @@ export class MeshController {
     public entityMesh: Mesh | InstancedMesh;
     public fakeShadow: Mesh;
 
-    constructor(entity: Entity) {
+    constructor(entity: Entity | Gift) {
         this._entity = entity;
         this._game = entity._game;
     }
@@ -66,6 +67,26 @@ export class MeshController {
             shadowMesh.alwaysSelectAsActiveMesh = true;
             this.fakeShadow = shadowMesh;
         }
+    }
+
+    spawnGift() {
+        let boxSize = 1;
+        const box = MeshBuilder.CreateBox("Player_" + this._entity.sessionId, { width: 1, height: 1, depth: 1 }, this._scene);
+        box.position = new Vector3(0, boxSize / 2, 0);
+
+        // material
+        const material = new StandardMaterial("box-material", this._scene);
+        material.diffuseColor = Color3.FromHexString("#" + this._entity.color);
+
+        //
+        box.material = material;
+        box.parent = this._entity;
+
+        // add player shadow
+        this._entity._shadow.addShadowCaster(box);
+
+        //
+        this.entityMesh = box;
     }
 
     spawnCapsule() {

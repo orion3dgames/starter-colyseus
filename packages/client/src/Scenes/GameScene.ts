@@ -15,6 +15,7 @@ import { CameraController } from "../Entities/Entity/CameraController";
 import { LevelGenerator } from "../Controllers/LevelGenerator";
 import { NavMeshController } from "../Controllers/NavMeshController";
 import Debugger from "../Utils/Debugger";
+import { Gift } from "../Entities/Gift";
 
 export class GameScene {
     public _game: GameController;
@@ -107,7 +108,8 @@ export class GameScene {
         //
         this.$ = getStateCallbacks(this.room);
 
-        // colyseus callbacks
+        ////////////////////////////////////////////////////
+        // PLAYERS
         this.$(this.room.state).players.onAdd((schema, sessionId) => {
             Debugger.log("SCHEMA", "player added", schema);
             this.entities.set(sessionId, new Entity(sessionId, this._scene, this, schema, sessionId === this.sessionId));
@@ -118,6 +120,20 @@ export class GameScene {
             }
             this.entities.delete(sessionId);
             Debugger.log("SCHEMA", "player removed", sessionId);
+        });
+
+        ////////////////////////////////////////////////////
+        // GIFTS
+        this.$(this.room.state).gifts.onAdd((schema, sessionId) => {
+            Debugger.log("SCHEMA", "gift added", schema);
+            this.entities.set(sessionId, new Gift(sessionId, this._scene, this, schema));
+        });
+        this.$(this.room.state).players.onRemove((schema, sessionId) => {
+            if (this.entities.get(sessionId)) {
+                this.entities.get(sessionId).delete();
+            }
+            this.entities.delete(sessionId);
+            Debugger.log("SCHEMA", "gift removed", sessionId);
         });
 
         ////////////////////////////////////////////////////

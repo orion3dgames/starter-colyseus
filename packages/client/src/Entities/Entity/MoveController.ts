@@ -61,7 +61,7 @@ export class MoveController {
         }
 
         // rotate player mesh to fake player rotation
-        const rotation = Math.atan2(movementVector.x, movementVector.z) - Math.PI;
+        const rotation = Math.atan2(movementVector.x, movementVector.z);
         this._player._mesh.entityMesh.rotation.y = rotation;
     }
 
